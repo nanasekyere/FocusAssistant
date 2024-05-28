@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 import UserNotifications
 
-@Model class UserTask: TaskProtocol {
+@Model class UserTask: Task {
     var identity: UUID = UUID()
     var name: String = ""
     var duration: Int = 0
@@ -19,6 +19,7 @@ import UserNotifications
     var details: String?
     var isCompleted: Bool = false
     var isExpired: Bool = false
+    var timeStarted: Date?
 
     init(name: String, duration: Int, startTime: Date, priority: Priority, imageURL: String? = nil, details: String? = nil) {
         self.name = name
@@ -28,7 +29,10 @@ import UserNotifications
         self.imageURL = imageURL
         self.details = details
     }
-
+    
+    func startTask() {
+        timeStarted = Date.now
+    }
     // Function to schedule a notification for the task
     func scheduleNotification() {
         guard startTime > Date() else { return }

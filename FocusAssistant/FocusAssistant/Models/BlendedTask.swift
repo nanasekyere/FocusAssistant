@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 import UserNotifications
 
-@Model class BlendedTask: TaskProtocol {
+@Model class BlendedTask: Task {
     var identity: UUID = UUID()
     var name: String = ""
     var duration: Int = 1500
@@ -17,19 +17,19 @@ import UserNotifications
     var imageURL: String?
     var details: String?
     var isCompleted: Bool = false
+    var timeStarted: Date?
 
     var pomodoroCounter: Int = 0
     var isBreak: Bool = false
     // Relationship to subtasks with cascade delete rule
     @Relationship(deleteRule: .cascade, inverse: \Subtask.blendedTask)
-    var subtasks = [Subtask]()
-
+    var subtasks: [Subtask]?
     // Computed property to get sorted subtasks by index
     var sortedSubtasks: [Subtask] {
-        return subtasks.sorted(by: { $0.index < $1.index })
+        return subtasks?.sorted(by: { $0.index < $1.index }) ?? []
     }
 
-    init(name: String, duration: Int, priority: Priority, imageURL: String? = nil, details: String? = nil, subtasks: [Subtask]) {
+    init(name: String, duration: Int, priority: Priority, imageURL: String? = nil, details: String? = nil, subtasks: [Subtask]?) {
         self.name = name
         self.duration = duration
         self.priority = priority
@@ -38,6 +38,10 @@ import UserNotifications
         self.subtasks = subtasks
     }
 
+    func startTask() {
+        timeStarted = Date.now
+    }
+    
     func scheduleNotification() {
         print("noti")
     }
@@ -68,18 +72,18 @@ import UserNotifications
 
 /// Represents a subtask within a blended task.
 @Model class Subtask {
-    var name: String // Name of the subtask
+    var name: String = ""// Name of the subtask
 
     // Relationship to details with cascade delete rule
     @Relationship(deleteRule: .cascade, inverse: \Detail.subtask)
-    var details = [Detail]()
+    var details: [Detail]?
 
     // Computed property to get sorted details by index
     var sortedDetails: [Detail] {
-        return details.sorted(by: { $0.index < $1.index })
+        return details?.sorted(by: { $0.index < $1.index }) ?? []
     }
 
-    var index: Int // Index of the subtask in the parent BlendedTask
+    var index: Int = 0 // Index of the subtask in the parent BlendedTask
     var blendedTask: BlendedTask? // Reference to the parent BlendedTask
 
     // Initializer to create a Subtask with name, details, and index
@@ -99,8 +103,8 @@ import UserNotifications
 
 /// Represents a detail within a subtask.
 @Model class Detail {
-    var desc: String // Description of the detail
-    var isCompleted: Bool // Flag to indicate if the detail is completed
+    var desc: String = "" // Description of the detail
+    var isCompleted: Bool = false // Flag to indicate if the detail is completed
     var subtask: Subtask? // Reference to the parent Subtask
     var index: Int = 0 // Index of the detail in the parent Subtask
 

@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 import UserNotifications
 
-@Model class PomodoroTask: TaskProtocol {
+@Model class PomodoroTask: Task {
     var identity: UUID = UUID()
     var name: String = ""
     var duration: Int = 1500
@@ -17,7 +17,8 @@ import UserNotifications
     var imageURL: String?
     var details: String?
     var isCompleted: Bool = false
-
+    var timeStarted: Date?
+    
     var pomodoroCounter: Int = 0
     var isBreak: Bool = false
 
@@ -27,6 +28,10 @@ import UserNotifications
         self.priority = priority
         self.imageURL = imageURL
         self.details = details
+    }
+
+    func startTask() {
+        timeStarted = Date.now
     }
 
     func scheduleNotification() {

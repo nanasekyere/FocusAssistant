@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		394D5B172C04AC3C009537A4 /* SwiftOpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 394D5B162C04AC3C009537A4 /* SwiftOpenAI */; };
 		394D5B1A2C04AC93009537A4 /* UserTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B192C04AC93009537A4 /* UserTask.swift */; };
-		394D5B1C2C04AD9F009537A4 /* TaskProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B1B2C04AD9F009537A4 /* TaskProtocol.swift */; };
+		394D5B1C2C04AD9F009537A4 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B1B2C04AD9F009537A4 /* Task.swift */; };
 		394D5B1E2C04B370009537A4 /* PomodoroTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B1D2C04B370009537A4 /* PomodoroTask.swift */; };
 		394D5B202C04B88B009537A4 /* RepeatingTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B1F2C04B88B009537A4 /* RepeatingTask.swift */; };
 		394D5B222C04B996009537A4 /* BlendedTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B212C04B996009537A4 /* BlendedTask.swift */; };
@@ -20,16 +20,29 @@
 		394D5B342C04BC3C009537A4 /* Int+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B292C04BC3C009537A4 /* Int+Ext.swift */; };
 		394D5B352C04BC3C009537A4 /* Optional+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B2A2C04BC3C009537A4 /* Optional+Ext.swift */; };
 		394D5B362C04BC3C009537A4 /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B2B2C04BC3C009537A4 /* String+Ext.swift */; };
+		394D5B3D2C04C532009537A4 /* Tabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B3C2C04C532009537A4 /* Tabs.swift */; };
+		394D5B462C04CF57009537A4 /* ConcentricOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = 394D5B452C04CF57009537A4 /* ConcentricOnboarding */; };
+		394D5B502C04D12F009537A4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B4E2C04D12F009537A4 /* HomeView.swift */; };
+		394D5B512C04D12F009537A4 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B4F2C04D12F009537A4 /* HomeViewModel.swift */; };
+		394D5B542C04D13B009537A4 /* TaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B522C04D13B009537A4 /* TaskView.swift */; };
+		394D5B552C04D13B009537A4 /* TaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B532C04D13B009537A4 /* TaskViewModel.swift */; };
+		394D5B582C04D144009537A4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B562C04D144009537A4 /* SettingsView.swift */; };
+		394D5B592C04D144009537A4 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B572C04D144009537A4 /* SettingsViewModel.swift */; };
+		394D5B5F2C04F8E7009537A4 /* TabBar in Frameworks */ = {isa = PBXBuildFile; productRef = 394D5B5E2C04F8E7009537A4 /* TabBar */; };
+		394D5B642C060704009537A4 /* BlenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B622C060703009537A4 /* BlenderView.swift */; };
+		394D5B652C060704009537A4 /* BlenderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B632C060703009537A4 /* BlenderViewModel.swift */; };
+		394D5B682C060713009537A4 /* NewTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B662C060713009537A4 /* NewTaskView.swift */; };
+		394D5B692C060714009537A4 /* NewTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B672C060713009537A4 /* NewTaskViewModel.swift */; };
+		394D5B6C2C0610AE009537A4 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B6B2C0610AE009537A4 /* Timer.swift */; };
+		394D5B6F2C0614A6009537A4 /* SwiftUI-FAB in Frameworks */ = {isa = PBXBuildFile; productRef = 394D5B6E2C0614A6009537A4 /* SwiftUI-FAB */; };
 		399C53B12C04AB7C00F8DB17 /* FocusAssistantApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399C53B02C04AB7C00F8DB17 /* FocusAssistantApp.swift */; };
-		399C53B32C04AB7C00F8DB17 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399C53B22C04AB7C00F8DB17 /* ContentView.swift */; };
-		399C53B52C04AB7C00F8DB17 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399C53B42C04AB7C00F8DB17 /* Item.swift */; };
 		399C53B72C04AB7D00F8DB17 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 399C53B62C04AB7D00F8DB17 /* Assets.xcassets */; };
 		399C53BA2C04AB7D00F8DB17 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 399C53B92C04AB7D00F8DB17 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		394D5B192C04AC93009537A4 /* UserTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTask.swift; sourceTree = "<group>"; };
-		394D5B1B2C04AD9F009537A4 /* TaskProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskProtocol.swift; sourceTree = "<group>"; };
+		394D5B1B2C04AD9F009537A4 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		394D5B1D2C04B370009537A4 /* PomodoroTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTask.swift; sourceTree = "<group>"; };
 		394D5B1F2C04B88B009537A4 /* RepeatingTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTask.swift; sourceTree = "<group>"; };
 		394D5B212C04B996009537A4 /* BlendedTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlendedTask.swift; sourceTree = "<group>"; };
@@ -42,10 +55,20 @@
 		394D5B2B2C04BC3C009537A4 /* String+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
 		394D5B392C04C2A4009537A4 /* FocusAssistant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusAssistant.entitlements; sourceTree = "<group>"; };
 		394D5B3A2C04C2E0009537A4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		394D5B3C2C04C532009537A4 /* Tabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tabs.swift; sourceTree = "<group>"; };
+		394D5B4E2C04D12F009537A4 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		394D5B4F2C04D12F009537A4 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		394D5B522C04D13B009537A4 /* TaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskView.swift; sourceTree = "<group>"; };
+		394D5B532C04D13B009537A4 /* TaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskViewModel.swift; sourceTree = "<group>"; };
+		394D5B562C04D144009537A4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		394D5B572C04D144009537A4 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		394D5B622C060703009537A4 /* BlenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlenderView.swift; sourceTree = "<group>"; };
+		394D5B632C060703009537A4 /* BlenderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlenderViewModel.swift; sourceTree = "<group>"; };
+		394D5B662C060713009537A4 /* NewTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskView.swift; sourceTree = "<group>"; };
+		394D5B672C060713009537A4 /* NewTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskViewModel.swift; sourceTree = "<group>"; };
+		394D5B6B2C0610AE009537A4 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		399C53AD2C04AB7C00F8DB17 /* FocusAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FocusAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		399C53B02C04AB7C00F8DB17 /* FocusAssistantApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusAssistantApp.swift; sourceTree = "<group>"; };
-		399C53B22C04AB7C00F8DB17 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		399C53B42C04AB7C00F8DB17 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		399C53B62C04AB7D00F8DB17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		399C53B92C04AB7D00F8DB17 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -55,7 +78,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				394D5B5F2C04F8E7009537A4 /* TabBar in Frameworks */,
+				394D5B462C04CF57009537A4 /* ConcentricOnboarding in Frameworks */,
 				394D5B172C04AC3C009537A4 /* SwiftOpenAI in Frameworks */,
+				394D5B6F2C0614A6009537A4 /* SwiftUI-FAB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,7 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				394D5B192C04AC93009537A4 /* UserTask.swift */,
-				394D5B1B2C04AD9F009537A4 /* TaskProtocol.swift */,
+				394D5B1B2C04AD9F009537A4 /* Task.swift */,
 				394D5B1D2C04B370009537A4 /* PomodoroTask.swift */,
 				394D5B1F2C04B88B009537A4 /* RepeatingTask.swift */,
 				394D5B212C04B996009537A4 /* BlendedTask.swift */,
@@ -104,6 +130,72 @@
 			path = Utilites;
 			sourceTree = "<group>";
 		};
+		394D5B3B2C04C4B0009537A4 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				394D5B4A2C04D115009537A4 /* Home */,
+				394D5B4B2C04D119009537A4 /* Tasks */,
+				394D5B602C0606C8009537A4 /* New Task */,
+				394D5B612C0606CD009537A4 /* Blender */,
+				394D5B4D2C04D120009537A4 /* Settings */,
+				394D5B3C2C04C532009537A4 /* Tabs.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		394D5B4A2C04D115009537A4 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				394D5B4E2C04D12F009537A4 /* HomeView.swift */,
+				394D5B4F2C04D12F009537A4 /* HomeViewModel.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		394D5B4B2C04D119009537A4 /* Tasks */ = {
+			isa = PBXGroup;
+			children = (
+				394D5B522C04D13B009537A4 /* TaskView.swift */,
+				394D5B532C04D13B009537A4 /* TaskViewModel.swift */,
+			);
+			path = Tasks;
+			sourceTree = "<group>";
+		};
+		394D5B4D2C04D120009537A4 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				394D5B562C04D144009537A4 /* SettingsView.swift */,
+				394D5B572C04D144009537A4 /* SettingsViewModel.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		394D5B602C0606C8009537A4 /* New Task */ = {
+			isa = PBXGroup;
+			children = (
+				394D5B662C060713009537A4 /* NewTaskView.swift */,
+				394D5B672C060713009537A4 /* NewTaskViewModel.swift */,
+			);
+			path = "New Task";
+			sourceTree = "<group>";
+		};
+		394D5B612C0606CD009537A4 /* Blender */ = {
+			isa = PBXGroup;
+			children = (
+				394D5B622C060703009537A4 /* BlenderView.swift */,
+				394D5B632C060703009537A4 /* BlenderViewModel.swift */,
+			);
+			path = Blender;
+			sourceTree = "<group>";
+		};
+		394D5B6A2C0610A1009537A4 /* For Later */ = {
+			isa = PBXGroup;
+			children = (
+				394D5B6B2C0610AE009537A4 /* Timer.swift */,
+			);
+			path = "For Later";
+			sourceTree = "<group>";
+		};
 		399C53A42C04AB7C00F8DB17 = {
 			isa = PBXGroup;
 			children = (
@@ -123,13 +215,13 @@
 		399C53AF2C04AB7C00F8DB17 /* FocusAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				394D5B6A2C0610A1009537A4 /* For Later */,
 				394D5B3A2C04C2E0009537A4 /* Info.plist */,
 				394D5B392C04C2A4009537A4 /* FocusAssistant.entitlements */,
 				394D5B302C04BC3C009537A4 /* Utilites */,
 				394D5B182C04AC7D009537A4 /* Models */,
+				394D5B3B2C04C4B0009537A4 /* Screens */,
 				399C53B02C04AB7C00F8DB17 /* FocusAssistantApp.swift */,
-				399C53B22C04AB7C00F8DB17 /* ContentView.swift */,
-				399C53B42C04AB7C00F8DB17 /* Item.swift */,
 				399C53B62C04AB7D00F8DB17 /* Assets.xcassets */,
 				399C53B82C04AB7D00F8DB17 /* Preview Content */,
 			);
@@ -162,6 +254,9 @@
 			name = FocusAssistant;
 			packageProductDependencies = (
 				394D5B162C04AC3C009537A4 /* SwiftOpenAI */,
+				394D5B452C04CF57009537A4 /* ConcentricOnboarding */,
+				394D5B5E2C04F8E7009537A4 /* TabBar */,
+				394D5B6E2C0614A6009537A4 /* SwiftUI-FAB */,
 			);
 			productName = FocusAssistant;
 			productReference = 399C53AD2C04AB7C00F8DB17 /* FocusAssistant.app */;
@@ -193,6 +288,9 @@
 			mainGroup = 399C53A42C04AB7C00F8DB17;
 			packageReferences = (
 				394D5B152C04AC3C009537A4 /* XCRemoteSwiftPackageReference "SwiftOpenAI" */,
+				394D5B442C04CF57009537A4 /* XCRemoteSwiftPackageReference "ConcentricOnboarding" */,
+				394D5B5D2C04F8E7009537A4 /* XCRemoteSwiftPackageReference "TabBar" */,
+				394D5B6D2C0614A6009537A4 /* XCRemoteSwiftPackageReference "SwiftUI-FAB" */,
 			);
 			productRefGroup = 399C53AE2C04AB7C00F8DB17 /* Products */;
 			projectDirPath = "";
@@ -220,20 +318,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				394D5B682C060713009537A4 /* NewTaskView.swift in Sources */,
+				394D5B692C060714009537A4 /* NewTaskViewModel.swift in Sources */,
+				394D5B582C04D144009537A4 /* SettingsView.swift in Sources */,
+				394D5B592C04D144009537A4 /* SettingsViewModel.swift in Sources */,
 				394D5B202C04B88B009537A4 /* RepeatingTask.swift in Sources */,
 				394D5B252C04BAF9009537A4 /* BackgroundPersistenceActor.swift in Sources */,
-				399C53B32C04AB7C00F8DB17 /* ContentView.swift in Sources */,
+				394D5B502C04D12F009537A4 /* HomeView.swift in Sources */,
+				394D5B512C04D12F009537A4 /* HomeViewModel.swift in Sources */,
 				394D5B362C04BC3C009537A4 /* String+Ext.swift in Sources */,
 				394D5B332C04BC3C009537A4 /* Date+Ext.swift in Sources */,
-				399C53B52C04AB7C00F8DB17 /* Item.swift in Sources */,
+				394D5B3D2C04C532009537A4 /* Tabs.swift in Sources */,
 				399C53B12C04AB7C00F8DB17 /* FocusAssistantApp.swift in Sources */,
 				394D5B1E2C04B370009537A4 /* PomodoroTask.swift in Sources */,
+				394D5B542C04D13B009537A4 /* TaskView.swift in Sources */,
+				394D5B552C04D13B009537A4 /* TaskViewModel.swift in Sources */,
+				394D5B642C060704009537A4 /* BlenderView.swift in Sources */,
+				394D5B652C060704009537A4 /* BlenderViewModel.swift in Sources */,
 				394D5B222C04B996009537A4 /* BlendedTask.swift in Sources */,
 				394D5B312C04BC3C009537A4 /* APIError+Ext.swift in Sources */,
 				394D5B342C04BC3C009537A4 /* Int+Ext.swift in Sources */,
 				394D5B1A2C04AC93009537A4 /* UserTask.swift in Sources */,
 				394D5B352C04BC3C009537A4 /* Optional+Ext.swift in Sources */,
-				394D5B1C2C04AD9F009537A4 /* TaskProtocol.swift in Sources */,
+				394D5B1C2C04AD9F009537A4 /* Task.swift in Sources */,
+				394D5B6C2C0610AE009537A4 /* Timer.swift in Sources */,
 				394D5B322C04BC3C009537A4 /* Calendar++Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -454,6 +562,30 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		394D5B442C04CF57009537A4 /* XCRemoteSwiftPackageReference "ConcentricOnboarding" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/exyte/ConcentricOnboarding.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.6;
+			};
+		};
+		394D5B5D2C04F8E7009537A4 /* XCRemoteSwiftPackageReference "TabBar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onl1ner/TabBar.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
+		394D5B6D2C0614A6009537A4 /* XCRemoteSwiftPackageReference "SwiftUI-FAB" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/karamage/SwiftUI-FAB.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -461,6 +593,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 394D5B152C04AC3C009537A4 /* XCRemoteSwiftPackageReference "SwiftOpenAI" */;
 			productName = SwiftOpenAI;
+		};
+		394D5B452C04CF57009537A4 /* ConcentricOnboarding */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 394D5B442C04CF57009537A4 /* XCRemoteSwiftPackageReference "ConcentricOnboarding" */;
+			productName = ConcentricOnboarding;
+		};
+		394D5B5E2C04F8E7009537A4 /* TabBar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 394D5B5D2C04F8E7009537A4 /* XCRemoteSwiftPackageReference "TabBar" */;
+			productName = TabBar;
+		};
+		394D5B6E2C0614A6009537A4 /* SwiftUI-FAB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 394D5B6D2C0614A6009537A4 /* XCRemoteSwiftPackageReference "SwiftUI-FAB" */;
+			productName = "SwiftUI-FAB";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

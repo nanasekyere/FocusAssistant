@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 import UserNotifications
 
-@Model class RepeatingTask: TaskProtocol {
+@Model class RepeatingTask: Task {
     var identity: UUID = UUID()
     var name: String = ""
     var duration: Int = 0
@@ -19,8 +19,9 @@ import UserNotifications
     var details: String?
     var isCompleted: Bool = false
     var isExpired: Bool = false
-
-    var repeatEvery: Int
+    var timeStarted: Date?
+    
+    var repeatEvery: Int = 300
 
     init(name: String, duration: Int, startTime: Date, priority: Priority, imageURL: String? = nil, details: String? = nil, repeatEvery: Int) {
         self.name = name
@@ -30,6 +31,10 @@ import UserNotifications
         self.imageURL = imageURL
         self.details = details
         self.repeatEvery = repeatEvery
+    }
+    
+    func startTask() {
+        timeStarted = Date.now
     }
 
     // Function to schedule a notification for the task

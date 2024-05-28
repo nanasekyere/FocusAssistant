@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol TaskProtocol {
+protocol Task {
     var identity: UUID { get }
     var name: String { get set }
     var duration: Int { get set }
@@ -15,9 +15,11 @@ protocol TaskProtocol {
     var imageURL: String? { get set }
     var details: String? { get set }
     var isCompleted: Bool { get set }
+    var timeStarted: Date? { get set }
 
     func scheduleNotification()
     func descheduleNotification()
+    func startTask()
     func completeTask()
 }
 
