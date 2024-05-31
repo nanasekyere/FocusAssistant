@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -28,13 +28,13 @@
 		394D5B552C04D13B009537A4 /* TaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B532C04D13B009537A4 /* TaskViewModel.swift */; };
 		394D5B582C04D144009537A4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B562C04D144009537A4 /* SettingsView.swift */; };
 		394D5B592C04D144009537A4 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B572C04D144009537A4 /* SettingsViewModel.swift */; };
-		394D5B5F2C04F8E7009537A4 /* TabBar in Frameworks */ = {isa = PBXBuildFile; productRef = 394D5B5E2C04F8E7009537A4 /* TabBar */; };
 		394D5B642C060704009537A4 /* BlenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B622C060703009537A4 /* BlenderView.swift */; };
 		394D5B652C060704009537A4 /* BlenderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B632C060703009537A4 /* BlenderViewModel.swift */; };
 		394D5B682C060713009537A4 /* NewTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B662C060713009537A4 /* NewTaskView.swift */; };
 		394D5B692C060714009537A4 /* NewTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B672C060713009537A4 /* NewTaskViewModel.swift */; };
 		394D5B6C2C0610AE009537A4 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B6B2C0610AE009537A4 /* Timer.swift */; };
-		394D5B6F2C0614A6009537A4 /* SwiftUI-FAB in Frameworks */ = {isa = PBXBuildFile; productRef = 394D5B6E2C0614A6009537A4 /* SwiftUI-FAB */; };
+		394D5B782C09FA7F009537A4 /* TabBar in Frameworks */ = {isa = PBXBuildFile; productRef = 394D5B772C09FA7F009537A4 /* TabBar */; };
+		394D5B7A2C0A02AD009537A4 /* View+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394D5B792C0A02AD009537A4 /* View+Ext.swift */; };
 		399C53B12C04AB7C00F8DB17 /* FocusAssistantApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399C53B02C04AB7C00F8DB17 /* FocusAssistantApp.swift */; };
 		399C53B72C04AB7D00F8DB17 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 399C53B62C04AB7D00F8DB17 /* Assets.xcassets */; };
 		399C53BA2C04AB7D00F8DB17 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 399C53B92C04AB7D00F8DB17 /* Preview Assets.xcassets */; };
@@ -67,6 +67,7 @@
 		394D5B662C060713009537A4 /* NewTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskView.swift; sourceTree = "<group>"; };
 		394D5B672C060713009537A4 /* NewTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskViewModel.swift; sourceTree = "<group>"; };
 		394D5B6B2C0610AE009537A4 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		394D5B792C0A02AD009537A4 /* View+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Ext.swift"; sourceTree = "<group>"; };
 		399C53AD2C04AB7C00F8DB17 /* FocusAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FocusAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		399C53B02C04AB7C00F8DB17 /* FocusAssistantApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusAssistantApp.swift; sourceTree = "<group>"; };
 		399C53B62C04AB7D00F8DB17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -78,10 +79,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				394D5B5F2C04F8E7009537A4 /* TabBar in Frameworks */,
 				394D5B462C04CF57009537A4 /* ConcentricOnboarding in Frameworks */,
 				394D5B172C04AC3C009537A4 /* SwiftOpenAI in Frameworks */,
-				394D5B6F2C0614A6009537A4 /* SwiftUI-FAB in Frameworks */,
+				394D5B782C09FA7F009537A4 /* TabBar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,6 +117,7 @@
 				394D5B292C04BC3C009537A4 /* Int+Ext.swift */,
 				394D5B2A2C04BC3C009537A4 /* Optional+Ext.swift */,
 				394D5B2B2C04BC3C009537A4 /* String+Ext.swift */,
+				394D5B792C0A02AD009537A4 /* View+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -255,8 +256,7 @@
 			packageProductDependencies = (
 				394D5B162C04AC3C009537A4 /* SwiftOpenAI */,
 				394D5B452C04CF57009537A4 /* ConcentricOnboarding */,
-				394D5B5E2C04F8E7009537A4 /* TabBar */,
-				394D5B6E2C0614A6009537A4 /* SwiftUI-FAB */,
+				394D5B772C09FA7F009537A4 /* TabBar */,
 			);
 			productName = FocusAssistant;
 			productReference = 399C53AD2C04AB7C00F8DB17 /* FocusAssistant.app */;
@@ -289,8 +289,7 @@
 			packageReferences = (
 				394D5B152C04AC3C009537A4 /* XCRemoteSwiftPackageReference "SwiftOpenAI" */,
 				394D5B442C04CF57009537A4 /* XCRemoteSwiftPackageReference "ConcentricOnboarding" */,
-				394D5B5D2C04F8E7009537A4 /* XCRemoteSwiftPackageReference "TabBar" */,
-				394D5B6D2C0614A6009537A4 /* XCRemoteSwiftPackageReference "SwiftUI-FAB" */,
+				394D5B762C09FA7F009537A4 /* XCLocalSwiftPackageReference "../../../Documents/Xcode/TabBar-master" */,
 			);
 			productRefGroup = 399C53AE2C04AB7C00F8DB17 /* Products */;
 			projectDirPath = "";
@@ -342,6 +341,7 @@
 				394D5B352C04BC3C009537A4 /* Optional+Ext.swift in Sources */,
 				394D5B1C2C04AD9F009537A4 /* Task.swift in Sources */,
 				394D5B6C2C0610AE009537A4 /* Timer.swift in Sources */,
+				394D5B7A2C0A02AD009537A4 /* View+Ext.swift in Sources */,
 				394D5B322C04BC3C009537A4 /* Calendar++Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -553,6 +553,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		394D5B762C09FA7F009537A4 /* XCLocalSwiftPackageReference "../../../Documents/Xcode/TabBar-master" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../Documents/Xcode/TabBar-master";
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		394D5B152C04AC3C009537A4 /* XCRemoteSwiftPackageReference "SwiftOpenAI" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -570,22 +577,6 @@
 				minimumVersion = 1.0.6;
 			};
 		};
-		394D5B5D2C04F8E7009537A4 /* XCRemoteSwiftPackageReference "TabBar" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/onl1ner/TabBar.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.0;
-			};
-		};
-		394D5B6D2C0614A6009537A4 /* XCRemoteSwiftPackageReference "SwiftUI-FAB" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/karamage/SwiftUI-FAB.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -599,15 +590,9 @@
 			package = 394D5B442C04CF57009537A4 /* XCRemoteSwiftPackageReference "ConcentricOnboarding" */;
 			productName = ConcentricOnboarding;
 		};
-		394D5B5E2C04F8E7009537A4 /* TabBar */ = {
+		394D5B772C09FA7F009537A4 /* TabBar */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 394D5B5D2C04F8E7009537A4 /* XCRemoteSwiftPackageReference "TabBar" */;
 			productName = TabBar;
-		};
-		394D5B6E2C0614A6009537A4 /* SwiftUI-FAB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 394D5B6D2C0614A6009537A4 /* XCRemoteSwiftPackageReference "SwiftUI-FAB" */;
-			productName = "SwiftUI-FAB";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -12,8 +12,7 @@ import TabBar
 struct Tabs: View {
     @Environment(\.colorScheme) var colorScheme
 
-    @State private var selection: Item = .first
-    @State private var visibility: TabBarVisibility = .visible
+    @State private var selection: Item = .third
 
     var body: some View {
         TabBar(selection: $selection) {
@@ -31,11 +30,8 @@ struct Tabs: View {
         
         .tabBar(style: CustomTabBarStyle())
         .tabItem(style: CustomTabItemStyle())
-        .shadow(color: colorScheme == .light ? .black.opacity(0.25) : .white.opacity(0.2) ,radius: 15)
     }
 }
-
-
 enum Item: Int, Tabbable {
     case first = 0
     case second
@@ -71,7 +67,7 @@ struct CustomTabBarStyle: TabBarStyle {
             .cornerRadius(25.0)
             .frame(height: 50.0)
             .padding(.horizontal, 32.0)
-            .padding(.bottom, 16.0 + geometry.safeAreaInsets.bottom)
+            .padding(.bottom, geometry.safeAreaInsets.bottom)
     }
 }
 
@@ -79,7 +75,8 @@ struct CustomTabItemStyle: TabItemStyle {
     public func tabItem(icon: String, title: String, isSelected: Bool) -> some View {
         ZStack {
             if isSelected {
-                Circle()
+                Rectangle()
+                    .cornerRadius(15)
                     .foregroundColor(.accentColor)
                     .frame(width: 40.0, height: 40.0)
             }
@@ -89,6 +86,7 @@ struct CustomTabItemStyle: TabItemStyle {
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(isSelected ? .white : .text2)
                 .frame(width: 20.0, height: 20.0)
+                .shadow(radius: 10)
         }
         .padding(.vertical, 8.0)
     }

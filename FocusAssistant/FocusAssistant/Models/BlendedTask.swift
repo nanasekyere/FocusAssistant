@@ -38,6 +38,10 @@ import UserNotifications
         self.subtasks = subtasks
     }
 
+    init(from dummy: DummyTask) {
+        self.name = dummy.name
+    }
+
     func startTask() {
         timeStarted = Date.now
     }

@@ -89,20 +89,33 @@ public actor BackgroundSerialPersistenceActor {
     /// - Parameters:
     ///   - activeTaskIDs: Set of active task IDs.
     ///   - activeModel: The active task view model.
-//    public func checkExpiredTasks(activeTaskIDs: Set<UUID>, activeModel: ActiveTaskViewModel) throws {
-//        let currentTime = Date.now
-//
-//        let tasks = try modelContext.fetch(FetchDescriptor<UserTask>(predicate: #Predicate<UserTask> { task in
-//            !task.isCompleted && !task.isExpired && !task.pomodoro
-//        }))
-//
-//        for task in tasks {
-//            if task.startTime! < currentTime && !activeTaskIDs.contains(task.identity) && activeModel.activeTask?.identity != task.identity {
-//                task.isExpired = true
-//                notifyExpiry(for: task)
-//            }
-//        }
-//    }
+    public func checkExpiredTasks() throws {
+        let currentTime = Date.now
+
+        let tasks = try modelContext.fetch(FetchDescriptor<UserTask>(predicate: #Predicate<UserTask> { task in
+            !task.isCompleted && !task.isExpired
+        }))
+
+        for task in tasks {
+            if task.startTime < currentTime && task.timeStarted == nil {
+                task.isExpired = true
+                notifyExpiry(for: task)
+            }
+        }
+
+        let rTasks = try modelContext.fetch(FetchDescriptor<RepeatingTask>(predicate: #Predicate<RepeatingTask> { task in
+            !task.isCompleted && !task.isExpired
+        }))
+
+        for task in rTasks {
+            if task.startTime < currentTime && task.timeStarted == nil {
+                task.isExpired = true
+                notifyExpiry(for: task)
+            }
+        }
+
+    }
+
 
     /// Checks if a new task clashes with existing tasks.
     ///
@@ -128,26 +141,39 @@ public actor BackgroundSerialPersistenceActor {
 
     /// Starts high-priority tasks if they are not active.
     ///
-    /// - Parameter activeTaskIDs: Set of active task IDs.
     /// - Returns: The high-priority task to be started, if any.
-//    func startHighPriorityTasks(_ activeTaskIDs: Set<UUID>) throws -> UserTask? {
-//        let availableTasks: [UserTask] = try fetchData(predicate: #Predicate<UserTask> { task in
-//            !task.isCompleted && !task.isExpired && task.blendedTask == nil && !task.pomodoro
-//        })
-//
-//        for task in availableTasks {
-//            if task.priority == .high {
-//                let endTime = task.startTime!.addingTimeInterval(Double(task.duration))
-//                if Date().isDate(inRange: task.startTime!, endDate: endTime) {
-//                    if !activeTaskIDs.contains(task.identity) {
-//                        print("Task \(task.name) Should start now")
-//                        return task
-//                    }
-//                }
-//            }
-//        }
-//        return nil
-//    }
+    func startHighPriorityTasks() throws {
+
+        let availableTasks: [UserTask] = try fetchData(predicate: #Predicate<UserTask> { task in
+            !task.isCompleted && !task.isExpired
+        })
+
+        for task in availableTasks {
+            if task.priority == .high {
+                let endTime = task.startTime.addingTimeInterval(Double(task.duration))
+                if Date().isDate(inRange: task.startTime, endDate: endTime) {
+                    if task.timeStarted == nil {
+                        task.startTask()
+                    }
+                }
+            }
+        }
+
+        let availableRTasks: [RepeatingTask] = try fetchData(predicate: #Predicate<RepeatingTask> { task in
+            !task.isCompleted && !task.isExpired
+        })
+
+        for task in availableRTasks {
+            if task.priority == .high {
+                let endTime = task.startTime.addingTimeInterval(Double(task.duration))
+                if Date().isDate(inRange: task.startTime, endDate: endTime) {
+                    if task.timeStarted == nil {
+                        task.startTask()
+                    }
+                }
+            }
+        }
+    }
 
     /// Checks and returns high-priority tasks that should start now.
     ///
@@ -175,58 +201,57 @@ public actor BackgroundSerialPersistenceActor {
     ///
     /// - Parameter JSONString: The JSON string representing the BlendedTask.
     /// - Returns: The decoded BlendedTask.
-//    func safeDecodeBlendedTask(from JSONString: String) throws -> BlendedTask {
-//        let dummyTask = try DummyTask.init(JSONString)
-//        let blendedTask = BlendedTask(from: dummyTask)
-//        modelContext.insert(blendedTask)
-//        blendedTask.correspondingTask = blendedTask.toTask()
-//        var subtasks = [Subtask]()
-//
-//        for (index, subtask) in dummyTask.subtasks.enumerated() {
-//            var details = [Detail]()
-//
-//            let newSubtask = Subtask(from: subtask, index: index)
-//            modelContext.insert(newSubtask)
-//            newSubtask.blendedTask = blendedTask
-//
-//            for (index, detail) in subtask.details.enumerated() {
-//                let newDetail = Detail(from: detail, index: index)
-//                modelContext.insert(newDetail)
-//                newDetail.subtask = newSubtask
-//                details.append(newDetail)
-//            }
-//            newSubtask.details = details
-//            subtasks.append(newSubtask)
-//        }
-//
-//        blendedTask.subtasks = subtasks
-//
-//        return blendedTask
-//    }
+    func safeDecodeBlendedTask(from JSONString: String) throws -> BlendedTask {
+        let dummyTask = try DummyTask.init(JSONString)
+        let blendedTask = BlendedTask(from: dummyTask)
+        modelContext.insert(blendedTask)
+        var subtasks = [Subtask]()
+
+        for (index, subtask) in dummyTask.subtasks.enumerated() {
+            var details = [Detail]()
+
+            let newSubtask = Subtask(from: subtask, index: index)
+            modelContext.insert(newSubtask)
+            newSubtask.blendedTask = blendedTask
+
+            for (index, detail) in subtask.details.enumerated() {
+                let newDetail = Detail(from: detail, index: index)
+                modelContext.insert(newDetail)
+                newDetail.subtask = newSubtask
+                details.append(newDetail)
+            }
+            newSubtask.details = details
+            subtasks.append(newSubtask)
+        }
+
+        blendedTask.subtasks = subtasks
+
+        return blendedTask
+    }
 }
 
 /// Manages the data for previewing purposes.
-//@MainActor
-//class DataController {
-//    /// Provides a preview container for data.
-//    static let previewContainer: ModelContainer = {
-//        do {
-//            let config = ModelConfiguration(isStoredInMemoryOnly: true)
-//            let container = try ModelContainer(for: UserTask.self, BlendedTask.self, configurations: config)
-//
-//            for task in sampleTasks {
-//                container.mainContext.insert(task)
-//            }
-//
-//            container.mainContext.insert(try decodeBlendedTask(from: serviceInfo.mockTask, modelContext: container.mainContext))
-//            container.mainContext.insert(try decodeBlendedTask(from: serviceInfo.mockTask2, modelContext: container.mainContext))
-//
-//            return container
-//        } catch {
-//            fatalError("Failed to create model container for previewing: \(error.localizedDescription)")
-//        }
-//    }()
-//}
+@MainActor
+class DataController {
+    /// Provides a preview container for data.
+    static let previewContainer: ModelContainer = {
+        do {
+            let config = ModelConfiguration(isStoredInMemoryOnly: true)
+            let container = try ModelContainer(for: UserTask.self, BlendedTask.self, configurations: config)
+
+            for task in sampleTasks {
+                container.mainContext.insert(task)
+            }
+
+            container.mainContext.insert(try decodeBlendedTask(from: mockJSON, modelContext: container.mainContext))
+            container.mainContext.insert(try decodeBlendedTask(from: mockJSON2, modelContext: container.mainContext))
+
+            return container
+        } catch {
+            fatalError("Failed to create model container for previewing: \(error.localizedDescription)")
+        }
+    }()
+}
 
 /// Decodes a BlendedTask from a JSON string and inserts it into the model context.
 ///
@@ -234,35 +259,34 @@ public actor BackgroundSerialPersistenceActor {
 ///   - JSONString: The JSON string representing the BlendedTask.
 ///   - modelContext: The model context to insert the decoded BlendedTask into.
 /// - Returns: The decoded BlendedTask.
-//func decodeBlendedTask(from JSONString: String, modelContext: ModelContext) throws -> BlendedTask {
-//    let dummyTask = try DummyTask.init(JSONString)
-//    let blendedTask = BlendedTask(from: dummyTask)
-//    modelContext.insert(blendedTask)
-//    blendedTask.correspondingTask = blendedTask.toTask()
-//
-//    var subtasks = [Subtask]()
-//
-//    for (index, subtask) in dummyTask.subtasks.enumerated() {
-//        var details = [Detail]()
-//
-//        let newSubtask = Subtask(from: subtask, index: index)
-//        modelContext.insert(newSubtask)
-//        newSubtask.blendedTask = blendedTask
-//
-//        for (index, detail) in subtask.details.enumerated() {
-//            let newDetail = Detail(from: detail, index: index)
-//            modelContext.insert(newDetail)
-//            newDetail.subtask = newSubtask
-//            details.append(newDetail)
-//        }
-//        newSubtask.details = details
-//        subtasks.append(newSubtask)
-//    }
-//
-//    blendedTask.subtasks = subtasks
-//
-//    return blendedTask
-//}
+func decodeBlendedTask(from JSONString: String, modelContext: ModelContext) throws -> BlendedTask {
+    let dummyTask = try DummyTask.init(JSONString)
+    let blendedTask = BlendedTask(from: dummyTask)
+    modelContext.insert(blendedTask)
+
+    var subtasks = [Subtask]()
+
+    for (index, subtask) in dummyTask.subtasks.enumerated() {
+        var details = [Detail]()
+
+        let newSubtask = Subtask(from: subtask, index: index)
+        modelContext.insert(newSubtask)
+        newSubtask.blendedTask = blendedTask
+
+        for (index, detail) in subtask.details.enumerated() {
+            let newDetail = Detail(from: detail, index: index)
+            modelContext.insert(newDetail)
+            newDetail.subtask = newSubtask
+            details.append(newDetail)
+        }
+        newSubtask.details = details
+        subtasks.append(newSubtask)
+    }
+
+    blendedTask.subtasks = subtasks
+
+    return blendedTask
+}
 
 /// Creates a task from a DummyTask and inserts it into the model context.
 ///
@@ -300,7 +324,7 @@ public actor BackgroundSerialPersistenceActor {
 /// Notifies the user about a task expiry.
 ///
 /// - Parameter task: The task that has expired.
-func notifyExpiry(for task: UserTask) {
+func notifyExpiry(for task: Task) {
     let content = UNMutableNotificationContent()
     content.title = "Task Expired"
     content.body = "You missed the start time for \(task.name)"
