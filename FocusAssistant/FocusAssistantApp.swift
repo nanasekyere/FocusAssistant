@@ -7,23 +7,23 @@
 
 import SwiftUI
 import FirebaseCore
-
-
-class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-
-    return true
-  }
-}
+import FirebaseFirestore
+import FirebaseAuth
 
 @main
 struct FocusAssistantApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    init() {
+        FirebaseApp.configure()
+        self.signInVM.getUser()
+    }
+    
+    @State private var signInVM = SignInVM()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(signInVM)
         }
     }
 }

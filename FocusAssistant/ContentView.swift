@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(SignInVM.self) private var authVM
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if authVM.userSession != nil {
+                ProfileView()
+            } else {
+                SignInView()
+            }
         }
         .padding()
     }
@@ -21,4 +24,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(SignInVM())
 }

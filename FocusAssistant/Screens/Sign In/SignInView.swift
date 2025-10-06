@@ -9,13 +9,17 @@ import SwiftUI
 import FirebaseAuth
 
 struct SignInView: View {
-    @State private var vm: SignInVM = .init()
+    @Environment(SignInVM.self) private var vm
+    
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmingPassword: String = ""
     @State private var signingUp: Bool = false
+    @State private var firstName: String = ""
+    @State private var lastName: String = ""
     
     var body: some View {
+        @Bindable var vm = vm
         NavigationStack {
             VStack(spacing: 15){
                 Text("Focus Assistant")
@@ -25,6 +29,26 @@ struct SignInView: View {
                     .padding(.bottom)
                 
                 Group {
+                    if signingUp {
+                        HStack {
+                            GlassEffectContainer {
+                                TextField("First Name", text: $firstName)
+                                    .autocapitalization(.none)
+                                    .textContentType(.emailAddress)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 10)
+                                    .glassEffect(.regular.interactive())
+                                
+                                TextField("Last Name", text: $lastName)
+                                    .autocapitalization(.none)
+                                    .textContentType(.emailAddress)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 10)
+                                    .glassEffect(.regular.interactive())
+                            }
+                        }
+                    
+                    }
                     TextField("Email", text: $email)
                         .autocapitalization(.none)
                         .textContentType(.emailAddress)
@@ -35,7 +59,7 @@ struct SignInView: View {
                     SecureField("Password", text: $password)
                         .autocorrectionDisabled(true)
                         .autocapitalization(.none)
-                        .textContentType(.password)
+                        .textContentType(isDebug() ? .none : .password)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
                         .glassEffect(.regular.interactive())
@@ -44,14 +68,13 @@ struct SignInView: View {
                         SecureField("Confirm Password", text: $confirmingPassword)
                             .autocorrectionDisabled(true)
                             .autocapitalization(.none)
-                            .textContentType(.password)
+                            .textContentType(isDebug() ? .none : .password)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 10)
                             .glassEffect(.regular.interactive())
                             .transition(.move(edge: .top).combined(with: .opacity))
                     }
                 }
-                .background(.ultraThinMaterial)
                 .clipShape(.capsule)
                 .animation(.easeInOut, value: signingUp)
                 
@@ -65,9 +88,16 @@ struct SignInView: View {
                 
                 Button {
                     if signingUp {
-                        vm.signUp(email: email, password: password)
+                        if password != confirmingPassword {
+                            vm.errorMessage = "Passwords don't match"
+                            vm.showError.toggle()
+                        } else {
+                            Task {
+                                try await vm.createUser(withEmail: email, password: password, fullname: firstName + " " + lastName)
+                            }
+                        }
                     } else {
-                        vm.signIn(email: email, password: password)
+//                        vm.signIn(email: email, password: password)
                     }
                 } label: {
                     Text(signingUp ? "Sign Up" : "Sign In")
@@ -98,14 +128,23 @@ struct SignInView: View {
             }
         }
         .padding(.horizontal, 20)
-        .alert("Sign in error", isPresented: $vm.showError) {
-            Button("OK") {}
+        .alert("Login error", isPresented: $vm.showError) {
+            Button("OK") {
+                vm.showError = false
+            }
         } message: {
             Text(vm.errorMessage ?? "Unknown error")
         }
     }
 }
 
+extension SignInView: AuthenticationFormProtocol {
+    var formIsValid: Bool {
+        return !email.isEmpty && !password.isEmpty && email.contains("@") && password.count >= 6
+    }
+}
+
 #Preview {
     SignInView()
+        .environment(SignInVM())
 }
