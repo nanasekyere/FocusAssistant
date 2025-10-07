@@ -12,14 +12,30 @@
 		3910921F2E94436B00F0C274 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3910921E2E94436B00F0C274 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		396055172E95411500078A2F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 391091A42E9409D100F0C274 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 391091AB2E9409D100F0C274;
+			remoteInfo = FocusAssistant;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		391091AC2E9409D100F0C274 /* FocusAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FocusAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		396055132E95411500078A2F /* FocusAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FocusAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		391091AE2E9409D100F0C274 /* FocusAssistant */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = FocusAssistant;
+			sourceTree = "<group>";
+		};
+		396055142E95411500078A2F /* FocusAssistantTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FocusAssistantTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -35,6 +51,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		396055102E95411500078A2F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -42,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				391091AE2E9409D100F0C274 /* FocusAssistant */,
+				396055142E95411500078A2F /* FocusAssistantTests */,
 				391091AD2E9409D100F0C274 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				391091AC2E9409D100F0C274 /* FocusAssistant.app */,
+				396055132E95411500078A2F /* FocusAssistantTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,6 +107,29 @@
 			productReference = 391091AC2E9409D100F0C274 /* FocusAssistant.app */;
 			productType = "com.apple.product-type.application";
 		};
+		396055122E95411500078A2F /* FocusAssistantTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 396055192E95411500078A2F /* Build configuration list for PBXNativeTarget "FocusAssistantTests" */;
+			buildPhases = (
+				3960550F2E95411500078A2F /* Sources */,
+				396055102E95411500078A2F /* Frameworks */,
+				396055112E95411500078A2F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				396055182E95411500078A2F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				396055142E95411500078A2F /* FocusAssistantTests */,
+			);
+			name = FocusAssistantTests;
+			packageProductDependencies = (
+			);
+			productName = FocusAssistantTests;
+			productReference = 396055132E95411500078A2F /* FocusAssistantTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -97,6 +145,10 @@
 				TargetAttributes = {
 					391091AB2E9409D100F0C274 = {
 						CreatedOnToolsVersion = 26.0.1;
+					};
+					396055122E95411500078A2F = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 391091AB2E9409D100F0C274;
 					};
 				};
 			};
@@ -118,12 +170,20 @@
 			projectRoot = "";
 			targets = (
 				391091AB2E9409D100F0C274 /* FocusAssistant */,
+				396055122E95411500078A2F /* FocusAssistantTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		391091AA2E9409D100F0C274 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		396055112E95411500078A2F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -140,7 +200,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3960550F2E95411500078A2F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		396055182E95411500078A2F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 391091AB2E9409D100F0C274 /* FocusAssistant */;
+			targetProxy = 396055172E95411500078A2F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		391091B52E9409D200F0C274 /* Debug */ = {
@@ -328,6 +403,48 @@
 			};
 			name = Release;
 		};
+		3960551A2E95411500078A2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4TMP5JL59R;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nanasekyere.FocusAssistantTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FocusAssistant.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FocusAssistant";
+			};
+			name = Debug;
+		};
+		3960551B2E95411500078A2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4TMP5JL59R;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nanasekyere.FocusAssistantTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FocusAssistant.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FocusAssistant";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -345,6 +462,15 @@
 			buildConfigurations = (
 				391091B82E9409D200F0C274 /* Debug */,
 				391091B92E9409D200F0C274 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		396055192E95411500078A2F /* Build configuration list for PBXNativeTarget "FocusAssistantTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3960551A2E95411500078A2F /* Debug */,
+				3960551B2E95411500078A2F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -7,9 +7,9 @@
 
 import Foundation
 
-func AppVersion() -> String {
+func AppVersion() -> String? {
         if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             return appVersion
         }
-        return "Unknown"
+        return nil
     }

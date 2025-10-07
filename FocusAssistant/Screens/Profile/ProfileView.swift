@@ -68,11 +68,13 @@ struct ProfileView: View {
                     .padding(.horizontal)
                     
                     // Version Info
-                    Text("Version \(AppVersion())")
-                        .font(.footnote)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.secondary)
-                        .padding(.bottom, 20)
+                    if let appVersion = AppVersion() {
+                        Text("Version \(appVersion)")
+                            .font(.footnote)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.secondary)
+                            .padding(.bottom, 20)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
