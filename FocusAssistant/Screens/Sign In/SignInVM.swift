@@ -31,6 +31,14 @@ protocol AuthenticationFormProtocol {
         }
     }
     
+    init() {
+        
+    }
+    
+    init(currentUser: User) {
+        self.currentUser = currentUser
+    }
+    
     func signIn(withEmail email: String, password: String) async throws {
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
@@ -83,7 +91,7 @@ protocol AuthenticationFormProtocol {
         
         self.currentUser = try? snapshot.data(as: User.self)
         
-        print("DEBUG: Current user is \(self.currentUser)")
+        print("DEBUG: Current user is \(String(describing: self.currentUser))")
     }
 }
 

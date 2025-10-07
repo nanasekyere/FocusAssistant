@@ -22,6 +22,15 @@ struct User: Identifiable, Codable {
         
         return ""
     }
+    
+    var firstName: String {
+        let formatter = PersonNameComponentsFormatter()
+        if let components = formatter.personNameComponents(from: fullName) {
+            return components.givenName ?? ""
+        }
+        
+        return ""
+    }
 }
 
 extension User {

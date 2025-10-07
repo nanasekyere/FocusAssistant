@@ -97,7 +97,9 @@ struct SignInView: View {
                             }
                         }
                     } else {
-//                        vm.signIn(email: email, password: password)
+                        Task {
+                            try await vm.signIn(withEmail: email, password: password)
+                        }
                     }
                 } label: {
                     Text(signingUp ? "Sign Up" : "Sign In")
