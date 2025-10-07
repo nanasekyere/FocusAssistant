@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(SignInVM.self) private var authVM
+    @Environment(AuthVM.self) private var authVM
     
     var body: some View {
         Group {
@@ -24,5 +24,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environment(SignInVM())
+        .environment(AuthVM())
 }

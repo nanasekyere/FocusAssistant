@@ -16,7 +16,7 @@ protocol AuthenticationFormProtocol {
 }
 
 @MainActor
-@Observable class SignInVM {
+@Observable class AuthVM {
     var userSession: FirebaseAuth.User?
     var currentUser: User?
     

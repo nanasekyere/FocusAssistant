@@ -8,10 +8,14 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Environment(SignInVM.self) private var authVM
+    @Environment(AuthVM.self) private var authVM
+    @Environment(\.dismiss) private var dismiss
+    
+    @State private var showSignOutView: Bool = false
     
     var body: some View {
         @Bindable var authVM = authVM
+        
         if let user = authVM.currentUser {
             VStack(alignment: .center, spacing: 20) {
                 // Header Section
@@ -36,16 +40,17 @@ struct ProfileView: View {
                     Text(user.email)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                    
+                    Text("Member since \(user.createdAt.formatted(date: .abbreviated, time: .omitted))")
                 }
                 .padding(.top, 40)
                 
                 Spacer()
                 
-                // Profile Actions Section
                 VStack(spacing: 12) {
                     // Sign Out Button
                     Button(action: {
-                        authVM.signOut()
+                        showSignOutView = true
                     }) {
                         HStack {
                             Image(systemName: "arrow.right.square")
@@ -58,7 +63,7 @@ struct ProfileView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color(.systemGray6))
-                        .cornerRadius(12)
+                        .clipShape(.capsule)
                     }
                     .padding(.horizontal)
                     
@@ -79,11 +84,21 @@ struct ProfileView: View {
             } message: {
                 Text(authVM.errorMessage ?? "Unknown error")
             }
+            .alert("Are you sure you want to sign out?", isPresented: $showSignOutView) {
+                Button("Sign Out") {
+                    authVM.signOut()
+                }
+                .foregroundStyle(.red)
+                
+                Button(role: .cancel) {
+                    dismiss()
+                }
+            }
         }
     }
 }
 
 #Preview {
     ProfileView()
-        .environment(SignInVM(currentUser: User.example))
+        .environment(AuthVM(currentUser: User.example))
 }

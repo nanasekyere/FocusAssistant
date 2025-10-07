@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct SignInView: View {
-    @Environment(SignInVM.self) private var vm
+    @Environment(AuthVM.self) private var vm
     
     @State private var email: String = ""
     @State private var password: String = ""
@@ -47,7 +47,6 @@ struct SignInView: View {
                                     .glassEffect(.regular.interactive())
                             }
                         }
-                    
                     }
                     TextField("Email", text: $email)
                         .autocapitalization(.none)
@@ -148,5 +147,5 @@ extension SignInView: AuthenticationFormProtocol {
 
 #Preview {
     SignInView()
-        .environment(SignInVM())
+        .environment(AuthVM())
 }

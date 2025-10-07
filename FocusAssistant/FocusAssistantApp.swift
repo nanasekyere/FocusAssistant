@@ -18,7 +18,7 @@ struct FocusAssistantApp: App {
         self.signInVM.getUser()
     }
     
-    @State private var signInVM = SignInVM()
+    @State private var signInVM = AuthVM()
 
     var body: some Scene {
         WindowGroup {
