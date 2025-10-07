@@ -163,6 +163,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				391092192E94436B00F0C274 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				39B807AA2E9597AA0006C6C1 /* XCRemoteSwiftPackageReference "ButtonKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 391091AD2E9409D100F0C274 /* Products */;
@@ -484,6 +485,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 12.3.0;
+			};
+		};
+		39B807AA2E9597AA0006C6C1 /* XCRemoteSwiftPackageReference "ButtonKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Dean151/ButtonKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.6.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

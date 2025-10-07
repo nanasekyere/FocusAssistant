@@ -23,6 +23,8 @@ protocol AuthenticationFormProtocol {
     var errorMessage: String?
     var showError: Bool = false
     
+    var isLoading: Bool = false
+    
     func getUser() {
         self.userSession = Auth.auth().currentUser
         
@@ -41,42 +43,53 @@ protocol AuthenticationFormProtocol {
     
     func signIn(withEmail email: String, password: String) async throws {
         do {
+            isLoading = true
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
+            try await Task.sleep(for: .seconds(1))
             self.userSession = result.user
             await fetchUser()
             showError = false
+            isLoading = false
         } catch {
             print("Failed to Sign In with error \(error.localizedDescription)")
             errorMessage = error.localizedDescription
             showError = true
+            isLoading = false
         }
     }
     
     func createUser(withEmail email: String, password: String, fullname: String) async throws {
         do {
+            isLoading = true
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
+            try await Task.sleep(for: .seconds(1))
             self.userSession = result.user
             let user = User(id: result.user.uid, fullName: fullname, email: email)
             let encodedUser = try Firestore.Encoder().encode(user)
             try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
             await fetchUser()
             showError = false
+            isLoading = false
         } catch {
             print("Failed to create user with error \(error.localizedDescription)")
             errorMessage = error.localizedDescription
             showError = true
+            isLoading = false
         }
     }
     
     func signOut() {
         do {
+            isLoading = true
             try Auth.auth().signOut()
             self.userSession = nil
             self.currentUser = nil
+            isLoading = false
         } catch {
             print("Failed to sign out with error \(error.localizedDescription)")
             errorMessage = "Failed to sign out with error \(error.localizedDescription)"
             showError = true
+            isLoading = false
         }
     }
     

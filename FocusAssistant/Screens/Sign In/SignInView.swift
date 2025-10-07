@@ -10,6 +10,7 @@ import FirebaseAuth
 
 struct SignInView: View {
     @Environment(AuthVM.self) private var vm
+    @Environment(\.colorScheme) var colorScheme
     
     @State private var email: String = ""
     @State private var password: String = ""
@@ -101,12 +102,20 @@ struct SignInView: View {
                         }
                     }
                 } label: {
-                    Text(signingUp ? "Sign Up" : "Sign In")
-                        .font(.callout)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 6)
-                        .foregroundStyle(.background)
+                    if vm.isLoading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .tint(colorScheme == .dark ? .black : .white)
+                            
+                    } else {
+                        Text(signingUp ? "Sign Up" : "Sign In")
+                            .font(.callout)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 6)
+                            .foregroundStyle(.background)
+                            
+                    }
                 }
                 .buttonStyle(.borderedProminent)
                 .buttonBorderShape(.capsule)
