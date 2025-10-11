@@ -15,18 +15,18 @@ struct FocusAssistantApp: App {
     
     init() {
         FirebaseApp.configure()
-        self.signInVM.getUser()
+        self.authVM.getUser()
     }
     
-    @State private var signInVM = AuthVM()
+    @State private var authVM = AuthVM()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(signInVM)
+                .environment(authVM)
                 .onAppear {
                     // Initialize data manager when user is authenticated
-                    if let currentUser = signInVM.currentUser {
+                    if let currentUser = authVM.currentUser {
                         let dataManager = FocusDataManager(userId: currentUser.id)
                         Task {
                             await dataManager.loadAllData()
