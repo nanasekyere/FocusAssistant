@@ -25,6 +25,31 @@ protocol AuthenticationFormProtocol {
     
     var isLoading: Bool = false
     
+    // MARK: - Collection References
+    private func userCollection() -> CollectionReference {
+        return Firestore.firestore().collection("users")
+    }
+    
+    private func tasksCollection() -> CollectionReference {
+        return Firestore.firestore().collection("tasks")
+    }
+    
+    private func focusSessionsCollection() -> CollectionReference {
+        return Firestore.firestore().collection("focusSessions")
+    }
+    
+    private func habitsCollection() -> CollectionReference {
+        return Firestore.firestore().collection("habits")
+    }
+    
+    private func remindersCollection() -> CollectionReference {
+        return Firestore.firestore().collection("reminders")
+    }
+    
+    private func dailyStatsCollection() -> CollectionReference {
+        return Firestore.firestore().collection("dailyStats")
+    }
+    
     func getUser() {
         self.userSession = Auth.auth().currentUser
         
@@ -66,7 +91,7 @@ protocol AuthenticationFormProtocol {
             self.userSession = result.user
             let user = User(id: result.user.uid, fullName: fullname, email: email)
             let encodedUser = try Firestore.Encoder().encode(user)
-            try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+            try await userCollection().document(user.id).setData(encodedUser)
             await fetchUser()
             showError = false
             isLoading = false
@@ -100,7 +125,7 @@ protocol AuthenticationFormProtocol {
     func fetchUser() async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
+        guard let snapshot = try? await userCollection().document(uid).getDocument() else { return }
         
         self.currentUser = try? snapshot.data(as: User.self)
         

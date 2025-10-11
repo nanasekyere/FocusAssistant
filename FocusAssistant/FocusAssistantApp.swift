@@ -24,6 +24,15 @@ struct FocusAssistantApp: App {
         WindowGroup {
             ContentView()
                 .environment(signInVM)
+                .onAppear {
+                    // Initialize data manager when user is authenticated
+                    if let currentUser = signInVM.currentUser {
+                        let dataManager = FocusDataManager(userId: currentUser.id)
+                        Task {
+                            await dataManager.loadAllData()
+                        }
+                    }
+                }
         }
     }
 }
