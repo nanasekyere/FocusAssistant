@@ -10,6 +10,7 @@
 		3910921B2E94436B00F0C274 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3910921A2E94436B00F0C274 /* FirebaseAuth */; };
 		3910921D2E94436B00F0C274 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3910921C2E94436B00F0C274 /* FirebaseCore */; };
 		3910921F2E94436B00F0C274 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3910921E2E94436B00F0C274 /* FirebaseFirestore */; };
+		397888D72E959BAB00EE86DD /* ButtonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 397888D62E959BAB00EE86DD /* ButtonKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3910921D2E94436B00F0C274 /* FirebaseCore in Frameworks */,
+				397888D72E959BAB00EE86DD /* ButtonKit in Frameworks */,
 				3910921B2E94436B00F0C274 /* FirebaseAuth in Frameworks */,
 				3910921F2E94436B00F0C274 /* FirebaseFirestore in Frameworks */,
 			);
@@ -102,6 +104,7 @@
 				3910921A2E94436B00F0C274 /* FirebaseAuth */,
 				3910921C2E94436B00F0C274 /* FirebaseCore */,
 				3910921E2E94436B00F0C274 /* FirebaseFirestore */,
+				397888D62E959BAB00EE86DD /* ButtonKit */,
 			);
 			productName = FocusAssistant;
 			productReference = 391091AC2E9409D100F0C274 /* FocusAssistant.app */;
@@ -512,6 +515,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 391092192E94436B00F0C274 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		397888D62E959BAB00EE86DD /* ButtonKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 39B807AA2E9597AA0006C6C1 /* XCRemoteSwiftPackageReference "ButtonKit" */;
+			productName = ButtonKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

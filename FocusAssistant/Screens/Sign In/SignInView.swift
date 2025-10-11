@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import ButtonKit
 
 struct SignInView: View {
     @Environment(AuthVM.self) private var vm
@@ -86,41 +87,35 @@ struct SignInView: View {
                 .font(.callout)
                 .fontWeight(.regular)
                 
-                Button {
-                    if signingUp {
-                        if password != confirmingPassword {
-                            vm.errorMessage = "Passwords don't match"
-                            vm.showError.toggle()
-                        } else {
-                            Task {
+                Group {
+                    AsyncButton {
+                        if signingUp {
+                            if password != confirmingPassword {
+                                vm.errorMessage = "Passwords don't match"
+                                vm.showError.toggle()
+                            } else {
                                 try await vm.createUser(withEmail: email, password: password, fullname: firstName + " " + lastName)
                             }
-                        }
-                    } else {
-                        Task {
+                        } else {
                             try await vm.signIn(withEmail: email, password: password)
                         }
-                    }
-                } label: {
-                    if vm.isLoading {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                            .tint(colorScheme == .dark ? .black : .white)
-                            
-                    } else {
+                    } label: {
                         Text(signingUp ? "Sign Up" : "Sign In")
                             .font(.callout)
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 6)
                             .foregroundStyle(.background)
-                            
                     }
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.capsule)
+                    .tint(.primary)
+                    .asyncButtonStyle(.pulse)
+                    .disabledWhenLoading()
+                    .throwableButtonStyle(.shake)
+                    .glassEffect(.regular.interactive())
                 }
-                .buttonStyle(.borderedProminent)
-                .buttonBorderShape(.capsule)
-                .tint(.primary)
-                .glassEffect(.regular.interactive())
+                .padding(.horizontal, 15)
                 
                 HStack (spacing: 4) {
                     Text(signingUp ? "Already have an account?" : "Don't have an account?")
