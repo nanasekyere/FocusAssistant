@@ -10,8 +10,7 @@ import Firebase
 import FirebaseFirestore
 
 struct Reminder: Identifiable, Codable {
-    @DocumentID var id: String? = UUID().uuidString
-    let userId: String
+    @DocumentID var id: String?
     
     var title: String
     var message: String?
@@ -141,7 +140,6 @@ extension Reminder {
     
     static var example: Reminder {
         Reminder(
-            userId: "user123",
             title: "Take medication",
             message: "Don't forget your morning medication",
             triggerDate: Calendar.current.date(byAdding: .hour, value: 1, to: Date()) ?? Date(),
@@ -155,7 +153,6 @@ extension Reminder {
 // MARK: - Analytics and Insights Models
 
 struct UserInsights: Codable {
-    let userId: String
     let dateRange: DateInterval
     
     // Productivity insights

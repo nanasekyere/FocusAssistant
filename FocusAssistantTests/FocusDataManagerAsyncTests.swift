@@ -37,15 +37,13 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Task operations maintain data integrity")
     func taskOperationsMaintainDataIntegrity() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        _ = FocusDataManager(userId: testUserId)
         let task = createTestTask()
         
         // Test that task operations would maintain integrity
         // In real implementation, these would interact with Firestore
         
         // Verify task has required fields for Firestore operations
-        #expect(task.id != nil)
-        #expect(task.userId == testUserId)
         #expect(task.createdAt <= Date())
         #expect(task.updatedAt <= Date())
         
@@ -62,7 +60,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Focus session lifecycle management")
     func focusSessionLifecycleManagement() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        _ = FocusDataManager(userId: testUserId)
         let session = createTestFocusSession()
         
         // Test session state transitions
@@ -97,21 +95,17 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Habit completion tracking")
     func habitCompletionTracking() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        _ = FocusDataManager(userId: testUserId)
         let habit = createTestHabit()
         
         // Test habit completion logic
         let completion = HabitCompletion(
-            habitId: habit.id ?? "test-habit",
-            userId: testUserId,
             completedAt: Date(),
             mood: .focused,
             energyLevel: .medium,
             difficulty: 3
         )
         
-        #expect(completion.habitId == habit.id)
-        #expect(completion.userId == testUserId)
         #expect(completion.completedAt <= Date())
         
         // Test habit statistics update
@@ -130,7 +124,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Reminder snooze functionality")
     func reminderSnoozeFunctionality() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        _ = FocusDataManager(userId: testUserId)
         let reminder = createTestReminder()
         let snoozeMinutes = 15
         
@@ -153,7 +147,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Daily stats update logic")
     func dailyStatsUpdateLogic() async {
-        let manager = FocusDataManager(userId: testUserId)
+        _ = FocusDataManager(userId: testUserId)
         
         // Test the daily stats calculation logic
         let today = Calendar.current.startOfDay(for: Date())
@@ -199,7 +193,6 @@ struct FocusDataManagerAsyncTests {
         let insights = try await manager.generateInsights(for: dateRange)
         
         // Verify insights calculations
-        #expect(insights.userId == testUserId)
         #expect(insights.totalFocusTime == 75) // 25 + 30 + 20
         #expect(insights.averageSessionLength == 25.0) // 75 / 3
         #expect(insights.completedTasks == 3)
@@ -222,7 +215,6 @@ struct FocusDataManagerAsyncTests {
         _ = await task1
         let insights = try await task2
         
-        #expect(insights.userId == testUserId)
         #expect(manager.errorMessage == nil)
     }
     
@@ -286,7 +278,6 @@ struct FocusDataManagerAsyncTests {
     
     private func createTestTask() -> UserTask {
         return UserTask(
-            userId: testUserId,
             title: "Async Test Task",
             description: "A task for async testing",
             estimatedDuration: 30,
@@ -305,7 +296,6 @@ struct FocusDataManagerAsyncTests {
     
     private func createTestFocusSession() -> FocusSession {
         return FocusSession(
-            userId: testUserId,
             title: "Async Test Session",
             focusMode: .deepWork,
             plannedDuration: 25
@@ -314,7 +304,6 @@ struct FocusDataManagerAsyncTests {
     
     private func createCompletedFocusSession(duration: Int, focusMode: FocusMode) -> FocusSession {
         var session = FocusSession(
-            userId: testUserId,
             title: "Completed Session",
             focusMode: focusMode,
             plannedDuration: duration
@@ -344,7 +333,6 @@ struct FocusDataManagerAsyncTests {
     
     private func createTestReminder() -> Reminder {
         return Reminder(
-            userId: testUserId,
             title: "Async Test Reminder",
             triggerDate: Calendar.current.date(byAdding: .hour, value: 1, to: Date()) ?? Date(),
             type: .task

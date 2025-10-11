@@ -19,7 +19,7 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Complete task workflow integration")
     func completeTaskWorkflowIntegration() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        _ = FocusDataManager(userId: testUserId)
         let task = createTestTask()
         
         // Simulate complete task workflow
@@ -29,7 +29,6 @@ struct FocusDataManagerIntegrationTests {
         
         // 2. Start focus session for task
         let focusSession = FocusSession(
-            userId: testUserId,
             taskId: task.id,
             title: "Focus on \(task.title)",
             focusMode: .deepWork,
@@ -73,7 +72,7 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Habit tracking workflow integration")
     func habitTrackingWorkflowIntegration() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        _ = FocusDataManager(userId: testUserId)
         let habit = createTestHabit()
         
         // Initial state
@@ -83,12 +82,10 @@ struct FocusDataManagerIntegrationTests {
         
         // Simulate multiple habit completions over time
         var updatedHabit = habit
-        let completions: [HabitCompletion] = []
+        let _: [HabitCompletion] = []
         
         // Day 1 completion
-        let day1Completion = HabitCompletion(
-            habitId: habit.id ?? "test-habit",
-            userId: testUserId,
+        _ = HabitCompletion(
             completedAt: Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date(),
             mood: .focused,
             energyLevel: .high,
@@ -104,9 +101,7 @@ struct FocusDataManagerIntegrationTests {
         #expect(updatedHabit.longestStreak == 1)
         
         // Day 2 completion
-        let day2Completion = HabitCompletion(
-            habitId: habit.id ?? "test-habit",
-            userId: testUserId,
+        _ = HabitCompletion(
             completedAt: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(),
             mood: .calm,
             energyLevel: .medium,
@@ -122,9 +117,7 @@ struct FocusDataManagerIntegrationTests {
         #expect(updatedHabit.longestStreak == 2)
         
         // Today completion
-        let todayCompletion = HabitCompletion(
-            habitId: habit.id ?? "test-habit",
-            userId: testUserId,
+        _ = HabitCompletion(
             completedAt: Date(),
             mood: .excited,
             energyLevel: .high,
@@ -147,12 +140,11 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Reminder lifecycle integration")
     func reminderLifecycleIntegration() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        _ = FocusDataManager(userId: testUserId)
         
         // Create reminder for a task
         let task = createTestTask()
         let reminder = Reminder(
-            userId: testUserId,
             title: "Complete \(task.title)",
             message: "Don't forget to work on your task",
             triggerDate: Calendar.current.date(byAdding: .minute, value: 30, to: Date()) ?? Date(),
@@ -191,14 +183,13 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Cross-entity relationships")
     func crossEntityRelationships() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        _ = FocusDataManager(userId: testUserId)
         
         // Create related entities
         let task = createTestTask()
         
         // Focus session linked to task
         let focusSession = FocusSession(
-            userId: testUserId,
             taskId: task.id,
             title: "Focus on \(task.title)",
             focusMode: .deepWork,
@@ -207,7 +198,6 @@ struct FocusDataManagerIntegrationTests {
         
         // Reminder for the task
         let taskReminder = Reminder(
-            userId: testUserId,
             title: "Task reminder",
             triggerDate: task.dueDate ?? Date(),
             type: .task,
@@ -216,7 +206,7 @@ struct FocusDataManagerIntegrationTests {
         
         // Reminder for the focus session
         let sessionReminder = Reminder(
-            userId: testUserId,
+
             title: "Start focus session",
             triggerDate: Calendar.current.date(byAdding: .minute, value: -5, to: focusSession.startTime ?? Date()) ?? Date(),
             type: .focusSession,
@@ -228,7 +218,6 @@ struct FocusDataManagerIntegrationTests {
         
         // Reminder for habit
         let habitReminder = Reminder(
-            userId: testUserId,
             title: "Time for \(habit.title)",
             triggerDate: Date(),
             type: .habit,
@@ -241,10 +230,6 @@ struct FocusDataManagerIntegrationTests {
         #expect(sessionReminder.focusSessionId == focusSession.id)
         #expect(habitReminder.habitId == habit.id)
         
-        // Test entity linking
-        #expect(focusSession.userId == taskReminder.userId)
-        #expect(taskReminder.userId == sessionReminder.userId)
-        #expect(sessionReminder.userId == habitReminder.userId)
     }
     
     @Test("Data consistency across operations")
@@ -260,7 +245,7 @@ struct FocusDataManagerIntegrationTests {
         
         let sessions = tasks.map { task in
             FocusSession(
-                userId: testUserId,
+
                 taskId: task.id,
                 title: "Session for \(task.title)",
                 focusMode: .deepWork,
@@ -276,7 +261,6 @@ struct FocusDataManagerIntegrationTests {
         
         let reminders = tasks.map { task in
             Reminder(
-                userId: testUserId,
                 title: "Reminder for \(task.title)",
                 triggerDate: Date(),
                 type: .task,
@@ -296,10 +280,6 @@ struct FocusDataManagerIntegrationTests {
         #expect(manager.habits.count == 5)
         #expect(manager.reminders.count == 10)
         
-        // All entities should have correct user IDs
-        #expect(manager.tasks.allSatisfy { $0.userId == testUserId })
-        #expect(manager.focusSessions.allSatisfy { $0.userId == testUserId })
-        #expect(manager.reminders.allSatisfy { $0.userId == testUserId })
         
         // Sessions should be linked to tasks
         for session in manager.focusSessions {
@@ -349,8 +329,8 @@ struct FocusDataManagerIntegrationTests {
         
         let completedTasks = manager.tasks.filter { $0.isCompleted }
         let completedSessions = manager.focusSessions.filter { $0.isCompleted }
-        let todaysTasks = manager.todaysTasks
-        let overdueTasks = manager.overdueTasks
+        _ = manager.todaysTasks
+        _ = manager.overdueTasks
         
         let operationTime = Date().timeIntervalSince(startTime)
         
@@ -387,7 +367,7 @@ struct FocusDataManagerIntegrationTests {
         
         // Perform operations that should not cause memory issues
         let filteredTasks = manager.todaysTasks
-        let overdueTasks = manager.overdueTasks
+        _ = manager.overdueTasks
         
         // Clear the large dataset
         manager.tasks = []
@@ -440,7 +420,6 @@ struct FocusDataManagerIntegrationTests {
     
     private func createTestTask() -> UserTask {
         return UserTask(
-            userId: testUserId,
             title: "Integration Test Task",
             description: "A task for integration testing",
             estimatedDuration: Int.random(in: 15...60),
@@ -453,7 +432,6 @@ struct FocusDataManagerIntegrationTests {
     
     private func createTestFocusSession() -> FocusSession {
         return FocusSession(
-            userId: testUserId,
             title: "Integration Test Session",
             focusMode: FocusMode.allCases.randomElement() ?? .deepWork,
             plannedDuration: Int.random(in: 15...60)

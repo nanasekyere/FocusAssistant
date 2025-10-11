@@ -223,7 +223,6 @@ struct FocusDataManagerEdgeCasesTests {
     func unicodeAndSpecialCharacterHandling() {
         // Test with various Unicode characters
         let unicodeTask = UserTask(
-            userId: testUserId,
             title: "📱 Task with 🔥 emojis and 中文字符",
             description: "Special chars: @#$%^&*()[]{}|\\:;\"'<>?,./",
             tags: ["🏷️", "测试", "café", "naïve"]
@@ -273,10 +272,10 @@ struct FocusDataManagerEdgeCasesTests {
     
     @Test("TimeZone handling")
     func timeZoneHandling() {
-        let manager = FocusDataManager(userId: testUserId)
+        _ = FocusDataManager(userId: testUserId)
         
         // Test daily stats with different time zones
-        let utcTimeZone = TimeZone(identifier: "UTC")!
+        _ = TimeZone(identifier: "UTC")!
         let pstTimeZone = TimeZone(identifier: "America/Los_Angeles")!
         
         let utcCalendar = Calendar.current
@@ -364,7 +363,6 @@ struct FocusDataManagerEdgeCasesTests {
     
     private func createTestTask() -> UserTask {
         return UserTask(
-            userId: testUserId,
             title: "Edge Case Test Task",
             description: "A task for edge case testing"
         )
@@ -372,7 +370,6 @@ struct FocusDataManagerEdgeCasesTests {
     
     private func createTestFocusSession() -> FocusSession {
         return FocusSession(
-            userId: testUserId,
             title: "Edge Case Test Session",
             focusMode: .deepWork,
             plannedDuration: 25
@@ -389,7 +386,6 @@ struct FocusDataManagerEdgeCasesTests {
     
     private func createTestReminder() -> Reminder {
         return Reminder(
-            userId: testUserId,
             title: "Edge Case Test Reminder",
             triggerDate: Date(),
             type: .task

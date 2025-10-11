@@ -10,8 +10,8 @@ import Firebase
 import FirebaseFirestore
 
 struct Habit: Identifiable, Codable {
-    @DocumentID var id: String? = UUID().uuidString
-    
+    @DocumentID var id: String?
+
     var title: String
     var description: String?
     var category: HabitCategory
@@ -40,8 +40,6 @@ struct Habit: Identifiable, Codable {
 
 struct HabitCompletion: Identifiable, Codable {
     var id: String = UUID().uuidString
-    let habitId: String
-    let userId: String
     
     var completedAt: Date = Date()
     var mood: Mood?

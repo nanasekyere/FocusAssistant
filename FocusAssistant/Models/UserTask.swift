@@ -10,8 +10,7 @@ import Firebase
 import FirebaseFirestore
 
 struct UserTask: Identifiable, Codable {
-    @DocumentID var id: String? = UUID().uuidString
-    let userId: String
+    @DocumentID var id: String?
     
     var title: String
     var description: String?
@@ -43,7 +42,7 @@ struct UserTask: Identifiable, Codable {
     // Tracking
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
-    var focusSessions: [String] = [] // References to FocusSession IDs
+    var focusSessions: [String] = [] // Reference to focus session IDs
     
     // Postponement tracking (important for ADHD users)
     var postponementCount: Int = 0
@@ -148,7 +147,6 @@ extension UserTask {
     
     static var example: UserTask {
         UserTask(
-            userId: "user123",
             title: "Complete project presentation",
             description: "Prepare slides for quarterly review",
             estimatedDuration: 120,

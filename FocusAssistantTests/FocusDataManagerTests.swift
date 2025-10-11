@@ -36,7 +36,6 @@ struct FocusDataManagerTests {
     func createSampleTask() {
         let task = createTestTask()
         
-        #expect(task.userId == testUserId)
         #expect(task.title == "Test Task")
         #expect(task.isCompleted == false)
         #expect(task.priority == .medium)
@@ -93,7 +92,6 @@ struct FocusDataManagerTests {
     func createFocusSession() {
         let session = createTestFocusSession()
         
-        #expect(session.userId == testUserId)
         #expect(session.title == "Test Focus Session")
         #expect(session.status == .planned)
         #expect(session.plannedDuration == 25)
@@ -188,15 +186,11 @@ struct FocusDataManagerTests {
     func createHabitCompletion() {
         let habit = createTestHabit()
         let completion = HabitCompletion(
-            habitId: habit.id ?? "test-habit",
-            userId: testUserId,
             mood: .focused,
             energyLevel: .high,
             difficulty: 3
         )
         
-        #expect(completion.habitId == habit.id)
-        #expect(completion.userId == testUserId)
         #expect(completion.mood == .focused)
         #expect(completion.energyLevel == .high)
         #expect(completion.difficulty == 3)
@@ -208,7 +202,6 @@ struct FocusDataManagerTests {
     func createReminder() {
         let reminder = createTestReminder()
         
-        #expect(reminder.userId == testUserId)
         #expect(reminder.title == "Test Reminder")
         #expect(reminder.type == .task)
         #expect(reminder.urgency == .normal)
@@ -254,7 +247,7 @@ struct FocusDataManagerTests {
     
     @Test("Snooze reminder calculation")
     func snoozeReminderCalculation() {
-        let reminder = createTestReminder()
+        _ = createTestReminder()
         let snoozeMinutes = 15
         let now = Date()
         
@@ -406,7 +399,6 @@ struct FocusDataManagerTests {
         let dateRange = DateInterval(start: Date(), duration: 86400) // 1 day
         let insights = try await manager.generateInsights(for: dateRange)
         
-        #expect(insights.userId == testUserId)
         #expect(insights.totalFocusTime == 55) // 25 + 30 minutes
         #expect(insights.averageSessionLength == 27.5) // (25 + 30) / 2
         #expect(insights.completedTasks == 1)
@@ -418,7 +410,6 @@ struct FocusDataManagerTests {
     
     private func createTestTask() -> UserTask {
         return UserTask(
-            userId: testUserId,
             title: "Test Task",
             description: "A task for testing",
             estimatedDuration: 30,
@@ -432,7 +423,6 @@ struct FocusDataManagerTests {
     
     private func createTestFocusSession() -> FocusSession {
         return FocusSession(
-            userId: testUserId,
             taskId: "test-task-id",
             title: "Test Focus Session",
             focusMode: .deepWork,
@@ -455,7 +445,6 @@ struct FocusDataManagerTests {
     
     private func createTestReminder() -> Reminder {
         return Reminder(
-            userId: testUserId,
             title: "Test Reminder",
             message: "This is a test reminder",
             triggerDate: Calendar.current.date(byAdding: .hour, value: 1, to: Date()) ?? Date(),
@@ -510,7 +499,7 @@ struct FocusDataManagerModelValidationTests {
     @Test("UserTask model validation")
     func userTaskValidation() {
         let task = UserTask(
-            userId: "test-user",
+
             title: "Valid Task",
             priority: .high,
             difficulty: .hard,
@@ -518,7 +507,6 @@ struct FocusDataManagerModelValidationTests {
             category: .work
         )
         
-        #expect(task.userId == "test-user")
         #expect(task.title == "Valid Task")
         #expect(task.priority == .high)
         #expect(task.difficulty == .hard)
@@ -531,13 +519,11 @@ struct FocusDataManagerModelValidationTests {
     @Test("FocusSession model validation")
     func focusSessionValidation() {
         let session = FocusSession(
-            userId: "test-user",
             title: "Valid Session",
             focusMode: .creative,
             plannedDuration: 45
         )
         
-        #expect(session.userId == "test-user")
         #expect(session.title == "Valid Session")
         #expect(session.focusMode == .creative)
         #expect(session.plannedDuration == 45)
@@ -566,14 +552,12 @@ struct FocusDataManagerModelValidationTests {
     func reminderValidation() {
         let triggerDate = Date()
         let reminder = Reminder(
-            userId: "test-user",
             title: "Valid Reminder",
             triggerDate: triggerDate,
             type: .medication,
             urgency: .high
         )
         
-        #expect(reminder.userId == "test-user")
         #expect(reminder.title == "Valid Reminder")
         #expect(reminder.triggerDate == triggerDate)
         #expect(reminder.type == .medication)

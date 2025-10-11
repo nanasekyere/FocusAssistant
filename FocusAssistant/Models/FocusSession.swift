@@ -10,8 +10,7 @@ import Firebase
 import FirebaseFirestore
 
 struct FocusSession: Identifiable, Codable {
-    @DocumentID var id: String? = UUID().uuidString
-    let userId: String
+    @DocumentID var id: String?
     
     var taskId: String? // Optional - can be a general focus session
     var title: String
@@ -159,7 +158,6 @@ extension FocusSession {
     
     static var example: FocusSession {
         FocusSession(
-            userId: "user123",
             taskId: "task456",
             title: "Work on presentation",
             focusMode: .deepWork,

@@ -31,23 +31,23 @@ import Observation
     
     // MARK: - Collection References
     private func tasksCollection() -> CollectionReference {
-        return Firestore.firestore().collection("tasks")
+        return Firestore.firestore().collection("users").document(userId).collection("tasks")
     }
     
     private func focusSessionsCollection() -> CollectionReference {
-        return Firestore.firestore().collection("focusSessions")
+        return Firestore.firestore().collection("users").document(userId).collection("focusSessions")
     }
     
     private func habitsCollection() -> CollectionReference {
-        return Firestore.firestore().collection("habits")
+        return Firestore.firestore().collection("users").document(userId).collection("habits")
     }
     
     private func remindersCollection() -> CollectionReference {
-        return Firestore.firestore().collection("reminders")
+        return Firestore.firestore().collection("users").document(userId).collection("reminders")
     }
     
     private func dailyStatsCollection() -> CollectionReference {
-        return Firestore.firestore().collection("dailyStats")
+        return Firestore.firestore().collection("users").document(userId).collection("dailyStats")
     }
     
     // MARK: - Task Management
@@ -91,7 +91,6 @@ import Observation
         isLoading = true
         do {
             let snapshot = try await tasksCollection()
-                .whereField("userId", isEqualTo: userId)
                 .order(by: "createdAt", descending: true)
                 .getDocuments()
             
@@ -152,7 +151,6 @@ import Observation
     func fetchFocusSessions() async {
         do {
             let snapshot = try await focusSessionsCollection()
-                .whereField("userId", isEqualTo: userId)
                 .order(by: "createdAt", descending: true)
                 .limit(to: 50)
                 .getDocuments()
@@ -208,7 +206,6 @@ import Observation
     func fetchHabits() async {
         do {
             let snapshot = try await habitsCollection()
-                .whereField("userId", isEqualTo: userId)
                 .whereField("isActive", isEqualTo: true)
                 .getDocuments()
             
@@ -265,7 +262,6 @@ import Observation
     func fetchReminders() async {
         do {
             let snapshot = try await remindersCollection()
-                .whereField("userId", isEqualTo: userId)
                 .whereField("isCompleted", isEqualTo: false)
                 .order(by: "triggerDate")
                 .getDocuments()
@@ -282,7 +278,7 @@ import Observation
     func generateInsights(for dateRange: DateInterval) async throws -> UserInsights {
         // This would typically involve complex queries and calculations
         // For now, return a basic structure
-        var insights = UserInsights(userId: userId, dateRange: dateRange)
+        var insights = UserInsights(dateRange: dateRange)
         
         // Calculate basic statistics from current data
         let completedSessions = focusSessions.filter { $0.isCompleted }
@@ -305,7 +301,6 @@ import Observation
         do {
             let statsRef = dailyStatsCollection().document("\(userId)_\(todayString)")
             try await statsRef.setData([
-                "userId": userId,
                 "date": today,
                 "focusTime": FieldValue.increment(Int64(focusTime)),
                 "completedTasks": FieldValue.increment(Int64(completedTasks)),

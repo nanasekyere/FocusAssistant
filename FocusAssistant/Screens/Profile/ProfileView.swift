@@ -19,11 +19,12 @@ struct ProfileView: View {
         if let user = authVM.currentUser {
             VStack(alignment: .center, spacing: 20) {
                 // Header Section
+                
                 VStack(spacing: 16) {
                     // Profile Image/Avatar
                     Circle()
                         .fill(.blue.gradient)
-                        .frame(width: 100, height: 100)
+                        .frame(width: 80, height: 80)
                         .overlay {
                             Text(String(user.firstName.first ?? "U").uppercased())
                                 .font(.largeTitle)
@@ -31,19 +32,27 @@ struct ProfileView: View {
                                 .foregroundStyle(.white)
                         }
                     
-                    Text("Staying Focused \(user.firstName)?")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.secondary)
-                        .padding(.top, 30)
-                    
                     Text(user.email)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     
                     Text("Member since \(user.createdAt.formatted(date: .abbreviated, time: .omitted))")
                 }
-                .padding(.top, 40)
+                .padding(.vertical, 20)
+                .frame(maxWidth: .infinity)
+                .background(Color(.systemGray5))
+                .clipShape(.rect(cornerRadius: 40))
+                .shadow(radius: 12)
+                
+                Form {
+                    HStack {
+                        Image(systemName: "questionmark.circle")
+                        
+                        Text("Help")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                    }
+                }
                 
                 Spacer()
                 
@@ -77,7 +86,9 @@ struct ProfileView: View {
                     }
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.top, 20)
+            .padding(.horizontal, 20)
+            .frame(maxWidth: .infinity)
             .background(Color(.systemBackground))
             .alert("Sign out error", isPresented: $authVM.showError) {
                 Button("OK") {
