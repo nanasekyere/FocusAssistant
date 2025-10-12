@@ -213,7 +213,7 @@ struct FocusDataManagerAsyncTests {
         
         // All operations should complete without issues
         _ = await task1
-        let insights = try await task2
+        _ = try await task2
         
         #expect(manager.errorMessage == nil)
     }

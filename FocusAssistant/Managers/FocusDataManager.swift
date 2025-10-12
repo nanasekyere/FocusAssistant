@@ -221,7 +221,7 @@ import Observation
     func createReminder(_ reminder: Reminder) async throws {
         let encodedReminder = try Firestore.Encoder().encode(reminder)
         guard let id = reminder.id else {
-            fatalError("Habit ID is malformed")
+            fatalError("Reminder ID is malformed")
         }
         try await remindersCollection().document(id).setData(encodedReminder)
         await fetchReminders()
@@ -234,7 +234,7 @@ import Observation
         
         let encodedReminder = try Firestore.Encoder().encode(completedReminder)
         guard let id = reminder.id else {
-            fatalError("Habit ID is malformed")
+            fatalError("Reminder ID is malformed")
         }
         try await remindersCollection().document(id).setData(encodedReminder, merge: true)
         await fetchReminders()
@@ -253,7 +253,7 @@ import Observation
     func updateReminder(_ reminder: Reminder) async throws {
         let encodedReminder = try Firestore.Encoder().encode(reminder)
         guard let id = reminder.id else {
-            fatalError("Habit ID is malformed")
+            fatalError("Reminder ID is malformed")
         }
         try await remindersCollection().document(id).setData(encodedReminder, merge: true)
         await fetchReminders()

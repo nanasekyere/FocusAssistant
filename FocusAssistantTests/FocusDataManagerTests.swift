@@ -184,7 +184,7 @@ struct FocusDataManagerTests {
     
     @Test("Create habit completion")
     func createHabitCompletion() {
-        let habit = createTestHabit()
+        let _ = createTestHabit()
         let completion = HabitCompletion(
             mood: .focused,
             energyLevel: .high,
