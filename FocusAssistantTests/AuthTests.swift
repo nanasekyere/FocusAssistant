@@ -67,7 +67,7 @@ private final class FakeStore: FirestoreLike {
 
 // MARK: - A thin wrapper around AuthVM to inject fakes
 // We can subclass and override the Firebase-interacting methods in tests.
-private final class TestableAuthVM: AuthVM {
+private final class TestableDataManager: DataManager {
     private let auth: AuthLike
     private let store: FirestoreLike
 
@@ -78,7 +78,7 @@ private final class TestableAuthVM: AuthVM {
     }
 
     // Helpers to bridge to production API surface
-    override func getUser() {
+    override func checkCurrentUser() {
         // simulate reading current user then fetching
         if let u = auth.currentUser() {
             self.userSession = nil // not used in tests, but keep parity
@@ -131,7 +131,7 @@ private final class TestableAuthVM: AuthVM {
 }
 
 @Suite("AuthVM tests")
-struct AuthVMTests {
+struct AuthTests {
     @MainActor @Test("Successful sign in populates currentUser and clears error")
     func signInSuccess() async throws {
         let auth = FakeAuth()
@@ -140,7 +140,7 @@ struct AuthVMTests {
         let existing = User(id: "signed-in-uid", fullName: "Ada Lovelace", email: "ada@example.com")
         store.users[existing.id] = existing
 
-        let vm = TestableAuthVM(auth: auth, store: store)
+        let vm = TestableDataManager(auth: auth, store: store)
         await vm.signInTest(email: "ada@example.com", password: "correct-horse")
 
         #expect(vm.currentUser?.id == existing.id)
@@ -153,7 +153,7 @@ struct AuthVMTests {
         let auth = FakeAuth()
         auth.signInError = NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "Invalid credentials"])        
         let store = FakeStore()
-        let vm = TestableAuthVM(auth: auth, store: store)
+        let vm = TestableDataManager(auth: auth, store: store)
 
         await vm.signInTest(email: "ada@example.com", password: "wrong")
 
@@ -166,7 +166,7 @@ struct AuthVMTests {
     func createUserSuccess() async throws {
         let auth = FakeAuth()
         let store = FakeStore()
-        let vm = TestableAuthVM(auth: auth, store: store)
+        let vm = TestableDataManager(auth: auth, store: store)
 
         await vm.createUserTest(email: "grace@example.com", password: "password", fullname: "Grace Hopper")
 
@@ -182,7 +182,7 @@ struct AuthVMTests {
         // Seed a user
         let seeded = User(id: "signed-in-uid", fullName: "Test User", email: "t@example.com")
         store.users[seeded.id] = seeded
-        let vm = TestableAuthVM(auth: auth, store: store)
+        let vm = TestableDataManager(auth: auth, store: store)
         await vm.signInTest(email: "t@example.com", password: "ok")
         #expect(vm.currentUser != nil)
 

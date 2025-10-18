@@ -1,5 +1,5 @@
 //
-//  FocusDataManagerEdgeCasesTests.swift
+//  DataManagerEdgeCasesTests.swift
 //  FocusAssistantTests
 //
 //  Created by Assistant on 11/10/2025.
@@ -9,9 +9,9 @@ import Testing
 import Foundation
 @testable import FocusAssistant
 
-@Suite("FocusDataManager Edge Cases and Error Scenarios")
+@Suite("DataManager Edge Cases and Error Scenarios")
 @MainActor
-struct FocusDataManagerEdgeCasesTests {
+struct DataManagerEdgeCasesTests {
     
     private let testUserId = "edge-case-test-user"
     
@@ -19,7 +19,7 @@ struct FocusDataManagerEdgeCasesTests {
     
     @Test("Empty collections handling")
     func emptyCollectionsHandling() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Test with empty collections
         #expect(manager.tasks.isEmpty)
@@ -178,7 +178,7 @@ struct FocusDataManagerEdgeCasesTests {
     
     @Test("TaskGroup concurrency edge cases")
     func taskGroupConcurrencyEdgeCases() async {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Test concurrent access to manager properties
         await withTaskGroup(of: Void.self) { group in
@@ -211,7 +211,7 @@ struct FocusDataManagerEdgeCasesTests {
         
         // Test with dates at year boundaries
         task.dueDate = Calendar.current.date(from: DateComponents(year: 2024, month: 12, day: 31, hour: 23, minute: 59))
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         manager.tasks = [task]
         
         // Should handle year boundary correctly
@@ -272,7 +272,7 @@ struct FocusDataManagerEdgeCasesTests {
     
     @Test("TimeZone handling")
     func timeZoneHandling() {
-        _ = FocusDataManager(userId: testUserId)
+        _ = DataManager()
         
         // Test daily stats with different time zones
         _ = TimeZone(identifier: "UTC")!
@@ -300,7 +300,7 @@ struct FocusDataManagerEdgeCasesTests {
     
     @Test("Filtering with mixed completion states")
     func filteringWithMixedCompletionStates() {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Use more precise date handling to avoid edge cases
         let now = Date()

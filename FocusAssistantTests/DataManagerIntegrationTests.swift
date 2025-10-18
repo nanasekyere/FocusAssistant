@@ -1,5 +1,5 @@
 //
-//  FocusDataManagerIntegrationTests.swift
+//  DataManagerIntegrationTests.swift
 //  FocusAssistantTests
 //
 //  Created by Assistant on 11/10/2025.
@@ -9,9 +9,9 @@ import Testing
 import Foundation
 @testable import FocusAssistant
 
-@Suite("FocusDataManager Integration and Mock Tests")
+@Suite("DataManager Integration and Mock Tests")
 @MainActor
-struct FocusDataManagerIntegrationTests {
+struct DataManagerIntegrationTests {
     
     private let testUserId = "integration-test-user"
     
@@ -19,7 +19,7 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Complete task workflow integration")
     func completeTaskWorkflowIntegration() async throws {
-        _ = FocusDataManager(userId: testUserId)
+        _ = DataManager()
         let task = createTestTask()
         
         // Simulate complete task workflow
@@ -72,7 +72,7 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Habit tracking workflow integration")
     func habitTrackingWorkflowIntegration() async throws {
-        _ = FocusDataManager(userId: testUserId)
+        _ = DataManager()
         let habit = createTestHabit()
         
         // Initial state
@@ -140,7 +140,7 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Reminder lifecycle integration")
     func reminderLifecycleIntegration() async throws {
-        _ = FocusDataManager(userId: testUserId)
+        _ = DataManager()
         
         // Create reminder for a task
         let task = createTestTask()
@@ -183,7 +183,7 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Cross-entity relationships")
     func crossEntityRelationships() async throws {
-        _ = FocusDataManager(userId: testUserId)
+        _ = DataManager()
         
         // Create related entities
         let task = createTestTask()
@@ -234,7 +234,7 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Data consistency across operations")
     func dataConsistencyAcrossOperations() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Create initial data
         let tasks = (1...10).map { i in
@@ -298,7 +298,7 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Bulk operations performance")
     func bulkOperationsPerformance() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Create large dataset
         let numberOfItems = 1000
@@ -351,7 +351,7 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Memory management with large datasets")
     func memoryManagementWithLargeDatasets() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Create and assign large dataset
         var largeTasks: [UserTask] = []
@@ -379,7 +379,7 @@ struct FocusDataManagerIntegrationTests {
     
     @Test("Concurrent access patterns")
     func concurrentAccessPatterns() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Set up initial data
         manager.tasks = (1...100).map { i in

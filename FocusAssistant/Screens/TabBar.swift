@@ -16,12 +16,12 @@ enum TabSelection {
 }
 
 struct TabBar: View {
-    @Environment(AuthVM.self) private var authVM
+    @Environment(DataManager.self) private var manager
     @State private var selectedTab: TabSelection = .home
     @State private var showAddTask: Bool = false
     
     var body: some View {
-        if let user = authVM.currentUser {
+        if let user = manager.currentUser {
             TabView(selection: $selectedTab) {
                 Tab("Home", systemImage: "house.fill", value: .home) {
                     NavigationStack {
@@ -65,5 +65,5 @@ struct TabBar: View {
 
 #Preview {
     TabBar()
-        .environment(AuthVM(currentUser: User.example))
+        .environment(DataManager(currentUser: User.example))
 }

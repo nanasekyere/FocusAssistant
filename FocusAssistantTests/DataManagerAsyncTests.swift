@@ -1,5 +1,5 @@
 //
-//  FocusDataManagerAsyncTests.swift
+//  DataManagerAsyncTests.swift
 //  FocusAssistantTests
 //
 //  Created by Assistant on 11/10/2025.
@@ -9,9 +9,9 @@ import Testing
 import Foundation
 @testable import FocusAssistant
 
-@Suite("FocusDataManager Async Operations Tests")
+@Suite("DataManager Async Operations Tests")
 @MainActor
-struct FocusDataManagerAsyncTests {
+struct DataManagerAsyncTests {
     
     private let testUserId = "async-test-user"
     
@@ -19,7 +19,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Load all data concurrently")
     func loadAllDataConcurrently() async {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // This test verifies the structure exists
         // In a real test, you would mock Firestore
@@ -37,7 +37,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Task operations maintain data integrity")
     func taskOperationsMaintainDataIntegrity() async throws {
-        _ = FocusDataManager(userId: testUserId)
+        _ = DataManager()
         let task = createTestTask()
         
         // Test that task operations would maintain integrity
@@ -60,7 +60,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Focus session lifecycle management")
     func focusSessionLifecycleManagement() async throws {
-        _ = FocusDataManager(userId: testUserId)
+        _ = DataManager()
         let session = createTestFocusSession()
         
         // Test session state transitions
@@ -95,7 +95,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Habit completion tracking")
     func habitCompletionTracking() async throws {
-        _ = FocusDataManager(userId: testUserId)
+        _ = DataManager()
         let habit = createTestHabit()
         
         // Test habit completion logic
@@ -124,7 +124,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Reminder snooze functionality")
     func reminderSnoozeFunctionality() async throws {
-        _ = FocusDataManager(userId: testUserId)
+        _ = DataManager()
         let reminder = createTestReminder()
         let snoozeMinutes = 15
         
@@ -147,7 +147,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Daily stats update logic")
     func dailyStatsUpdateLogic() async {
-        _ = FocusDataManager(userId: testUserId)
+        _ = DataManager()
         
         // Test the daily stats calculation logic
         let today = Calendar.current.startOfDay(for: Date())
@@ -164,7 +164,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Insights generation with comprehensive data")
     func insightsGenerationWithComprehensiveData() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Set up comprehensive test data
         let completedSessions = [
@@ -204,7 +204,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Concurrent operations safety")
     func concurrentOperationsSafety() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Test that multiple operations can be performed concurrently
         // without data corruption (this tests the @MainActor isolation)
@@ -222,7 +222,7 @@ struct FocusDataManagerAsyncTests {
     
     @Test("Large dataset handling")
     func largeDatasetHandling() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Create large datasets
         var largeTasks: [UserTask] = []

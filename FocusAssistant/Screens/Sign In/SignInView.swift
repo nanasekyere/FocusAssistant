@@ -10,7 +10,7 @@ import FirebaseAuth
 import ButtonKit
 
 struct SignInView: View {
-    @Environment(AuthVM.self) private var vm
+    @Environment(DataManager.self) private var manager
     @Environment(\.colorScheme) var colorScheme
     
     @State private var email: String = ""
@@ -21,7 +21,7 @@ struct SignInView: View {
     @State private var lastName: String = ""
     
     var body: some View {
-        @Bindable var vm = vm
+        @Bindable var manager = manager
         NavigationStack {
             VStack(spacing: 15){
                 Text("Focus Assistant")
@@ -91,13 +91,13 @@ struct SignInView: View {
                     AsyncButton {
                         if signingUp {
                             if password != confirmingPassword {
-                                vm.errorMessage = "Passwords don't match"
-                                vm.showError.toggle()
+                                manager.errorMessage = "Passwords don't match"
+                                manager.showError.toggle()
                             } else {
-                                try await vm.createUser(withEmail: email, password: password, fullname: firstName + " " + lastName)
+                                try await manager.signUp(withEmail: email, password: password, fullName: firstName + " " + lastName)
                             }
                         } else {
-                            try await vm.signIn(withEmail: email, password: password)
+                            try await manager.signIn(withEmail: email, password: password)
                         }
                     } label: {
                         Text(signingUp ? "Sign Up" : "Sign In")
@@ -133,23 +133,18 @@ struct SignInView: View {
             }
         }
         .padding(.horizontal, 20)
-        .alert("Login error", isPresented: $vm.showError) {
+        .alert("Login error", isPresented: $manager.showError) {
             Button("OK") {
-                vm.showError = false
+                manager.showError = false
             }
         } message: {
-            Text(vm.errorMessage ?? "Unknown error")
+            Text(manager.errorMessage ?? "Unknown error")
         }
     }
 }
 
-extension SignInView: AuthenticationFormProtocol {
-    var formIsValid: Bool {
-        return !email.isEmpty && !password.isEmpty && email.contains("@") && password.count >= 6
-    }
-}
 
 #Preview {
     SignInView()
-        .environment(AuthVM())
+        .environment(DataManager())
 }

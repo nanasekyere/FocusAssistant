@@ -10,8 +10,8 @@ import Foundation
 struct User: Identifiable, Codable {
     
     let id: String
-    let fullName: String
-    let email: String
+    var fullName: String
+    var email: String
     var createdAt: Date = Date()
     
     // ADHD-specific user preferences

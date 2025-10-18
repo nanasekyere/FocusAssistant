@@ -1,5 +1,5 @@
 //
-//  FocusDataManagerTests.swift
+//  DataManagerTests.swift
 //  FocusAssistantTests
 //
 //  Created by Assistant on 11/10/2025.
@@ -10,16 +10,16 @@ import Foundation
 @testable import FocusAssistant
 
 @MainActor
-@Suite("FocusDataManager Tests")
-struct FocusDataManagerTests {
+@Suite("DataManager Tests")
+struct DataManagerTests {
     
     private let testUserId = "test-user-123"
     
     // MARK: - Initialization Tests
     
-    @Test("Initialize FocusDataManager with user ID")
+    @Test("Initialize DataManager with user ID")
     func initializeWithUserId() {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         #expect(manager.tasks.isEmpty)
         #expect(manager.focusSessions.isEmpty)
@@ -266,7 +266,7 @@ struct FocusDataManagerTests {
     
     @Test("Today's tasks filtering")
     func todaysTasksFiltering() {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Use more precise date handling
         let today = Calendar.current.startOfDay(for: Date())
@@ -292,7 +292,7 @@ struct FocusDataManagerTests {
     
     @Test("Overdue tasks filtering")
     func overdueTasksFiltering() {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         var overdueTask = createTestTask()
         overdueTask.dueDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
@@ -316,7 +316,7 @@ struct FocusDataManagerTests {
     
     @Test("Active focus session detection")
     func activeFocusSessionDetection() {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         var activeSession = createTestFocusSession()
         activeSession.status = .active
@@ -333,7 +333,7 @@ struct FocusDataManagerTests {
     
     @Test("Upcoming reminders filtering")
     func upcomingRemindersFiltering() {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         var upcomingReminder = createTestReminder()
         upcomingReminder.triggerDate = Calendar.current.date(byAdding: .minute, value: 30, to: Date()) ?? Date()
@@ -356,7 +356,7 @@ struct FocusDataManagerTests {
     
     @Test("Today's habits filtering")
     func todaysHabitsFiltering() {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         var dailyHabit = createTestHabit()
         dailyHabit.frequency = .daily
@@ -375,7 +375,7 @@ struct FocusDataManagerTests {
     
     @Test("Generate basic insights")
     func generateBasicInsights() async throws {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Set up test data
         var completedSession1 = createTestFocusSession()
@@ -456,14 +456,14 @@ struct FocusDataManagerTests {
 
 // MARK: - Additional Test Suites
 @MainActor
-@Suite("FocusDataManager Error Handling Tests")
-struct FocusDataManagerErrorTests {
+@Suite("DataManager Error Handling Tests")
+struct DataManagerErrorTests {
     
     private let testUserId = "error-test-user"
     
     @Test("Manager handles loading state correctly")
     func managerHandlesLoadingState() {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         // Initial state should not be loading
         #expect(manager.isLoading == false)
@@ -478,7 +478,7 @@ struct FocusDataManagerErrorTests {
     
     @Test("Manager handles error messages")
     func managerHandlesErrorMessages() {
-        let manager = FocusDataManager(userId: testUserId)
+        let manager = DataManager(isTest: true)
         
         #expect(manager.errorMessage == nil)
         
@@ -493,8 +493,8 @@ struct FocusDataManagerErrorTests {
     }
 }
 
-@Suite("FocusDataManager Model Validation Tests")
-struct FocusDataManagerModelValidationTests {
+@Suite("DataManager Model Validation Tests")
+struct DataManagerModelValidationTests {
     
     @Test("UserTask model validation")
     func userTaskValidation() {

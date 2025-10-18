@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Environment(AuthVM.self) private var authVM
+    @Environment(DataManager.self) private var manager
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        @Bindable var authVM = authVM
+        @Bindable var manager = manager
         
-        if let user = authVM.currentUser {
+        if let user = manager.currentUser {
 
                 VStack(spacing: 15) {
                     Button("Start Focus Session") {
@@ -45,5 +45,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
-        .environment(AuthVM(currentUser: User.example))
+        .environment(DataManager(currentUser: User.example))
 }

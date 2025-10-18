@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Environment(AuthVM.self) private var authVM
+    @Environment(DataManager.self) private var manager
     @Environment(\.dismiss) private var dismiss
     
     @State private var showSignOutView: Bool = false
     
     var body: some View {
-        @Bindable var authVM = authVM
+        @Bindable var manager = manager
         
-        if let user = authVM.currentUser {
+        if let user = manager.currentUser {
             NavigationStack {
                 VStack(alignment: .center, spacing: 20) {
                     // Header Section
@@ -108,16 +108,16 @@ struct ProfileView: View {
                 .padding(.horizontal, 20)
                 .frame(maxWidth: .infinity)
                 .background(Color(.systemBackground))
-                .alert("Sign out error", isPresented: $authVM.showError) {
+                .alert("Sign out error", isPresented: $manager.showError) {
                     Button("OK") {
-                        authVM.showError = false
+                        manager.showError = false
                     }
                 } message: {
-                    Text(authVM.errorMessage ?? "Unknown error")
+                    Text(manager.errorMessage ?? "Unknown error")
                 }
                 .alert("Are you sure you want to sign out?", isPresented: $showSignOutView) {
                     Button("Sign Out") {
-                        authVM.signOut()
+                        manager.signOut()
                     }
                     .foregroundStyle(.red)
                     
@@ -132,5 +132,5 @@ struct ProfileView: View {
 
 #Preview {
     ProfileView()
-        .environment(AuthVM(currentUser: User.example))
+        .environment(DataManager(currentUser: User.example))
 }
