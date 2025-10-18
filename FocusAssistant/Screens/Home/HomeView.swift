@@ -16,28 +16,27 @@ struct HomeView: View {
         
         if let user = authVM.currentUser {
             NavigationStack {
-                VStack {
+                VStack(spacing: 15) {
                     Button("Start Focus Session") {
                         
                     }
+                    
+                    Button("Add New Task") {}
+                    
+                    Button("View Tasks") {}
+                    
+                    Button("Set Daily Goals") {}
+                    
+                    Button("Focus Statistics") {}
+                    
+                    Button("Break Reminder Settings") {}
+                    
+                    Button("Focus History") {}
+                    
+                    Button("Pomodoro Timer") {}
+    
                 }
                 .navigationTitle("Staying focused, \(user.firstName)?")
-                .toolbar {
-                    NavigationLink {
-                        ProfileView()
-                    } label: {
-                        Circle()
-                            .fill(.blue.gradient)
-                            .overlay {
-                                Text(String(user.firstName.first ?? "U").uppercased())
-                                    .font(.largeTitle)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.white)
-                            }
-                            .frame(width: 36, height: 36)
-                    }
-
-            }
             
             }
         }
