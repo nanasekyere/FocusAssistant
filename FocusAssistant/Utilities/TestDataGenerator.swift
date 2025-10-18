@@ -4,6 +4,7 @@
 //
 //  Created by Nana Sekyere on 11/10/2025.
 //
+// Used to create test data and populate Firestore Database
 
 import Foundation
 import FirebaseFirestore

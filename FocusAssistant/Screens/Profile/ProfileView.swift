@@ -43,7 +43,6 @@ struct ProfileView: View {
                     .frame(maxWidth: .infinity)
                     .background(Color(.systemGray6))
                     .clipShape(.rect(cornerRadius: 40))
-                    .shadow(radius: 12)
                     
                     Form {
                         HStack {
@@ -70,7 +69,6 @@ struct ProfileView: View {
                                 .fontWeight(.medium)
                         }.listRowBackground(Color(.systemGray6))
                     }
-                    .shadow(color: Color.black.opacity(0.15), radius: 8)
                     .listRowSpacing(12)
                     .scrollContentBackground(.hidden)
                     

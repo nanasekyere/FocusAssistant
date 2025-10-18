@@ -15,7 +15,7 @@ struct HomeView: View {
         @Bindable var authVM = authVM
         
         if let user = authVM.currentUser {
-            NavigationStack {
+
                 VStack(spacing: 15) {
                     Button("Start Focus Session") {
                         
@@ -38,7 +38,7 @@ struct HomeView: View {
                 }
                 .navigationTitle("Staying focused, \(user.firstName)?")
             
-            }
+            
         }
     }
 }
