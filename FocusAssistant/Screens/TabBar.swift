@@ -9,8 +9,10 @@ import SwiftUI
 
 enum TabSelection {
     case home
-    case today
-    case analytics
+    case tasks
+    case sessions
+    case habits
+    case insights
 }
 
 struct TabBar: View {
@@ -28,16 +30,34 @@ struct TabBar: View {
                     }
                 }
                 
-                Tab("Today", systemImage: "calendar", value: .today) {
+                Tab("Tasks", systemImage: "list.bullet.clipboard", value: .tasks) {
                     NavigationStack {
                         Text("Today")
                             .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
                     }
                 }
                 
-                Tab("Analytics", systemImage: "chart.bar.fill", value: .analytics) {
-                    ProfileView()
+                Tab("Sessions", systemImage: "brain", value: .sessions) {
+                    NavigationStack {
+                        ProfileView()
+                            .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
+                    }
                 }
+                
+                Tab("Habits", systemImage: "repeat.circle.fill", value: .habits) {
+                    NavigationStack {
+                        ProfileView()
+                            .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
+                    }
+                }
+                
+                Tab("Insights", systemImage: "chart.bar.fill", value: .insights) {
+                    NavigationStack {
+                        ProfileView()
+                            .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
+                    }
+                }
+            
             }
         }
     }
