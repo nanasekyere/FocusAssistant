@@ -307,15 +307,10 @@ class DataManager {
     
     func fetchTasks() async {
         guard isAuthenticated else { return }
-        
-        isLoading = true
-        defer { isLoading = false }
-        
         do {
             let snapshot = try await tasksCollection
                 .order(by: "createdAt", descending: true)
                 .getDocuments()
-            
             self.tasks = snapshot.documents.compactMap { doc in
                 try? doc.data(as: UserTask.self)
             }

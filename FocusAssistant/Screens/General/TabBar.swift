@@ -32,9 +32,20 @@ struct TabBar: View {
                 
                 Tab("Tasks", systemImage: "list.bullet.clipboard", value: .tasks) {
                     NavigationStack {
-                        Text("Today")
-                            .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
+                        if manager.isLoading {
+                            ProgressView()
+                        } else {
+                            TasksView()
+                                .environment(manager)
+                                .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
+                        }
                     }
+                    .onAppear {
+                        Task {
+                            await manager.loadAllData()
+                        }
+                    }
+                        
                 }
                 
                 Tab("Sessions", systemImage: "brain", value: .sessions) {
@@ -59,6 +70,13 @@ struct TabBar: View {
                 }
             
             }
+            .sheet(isPresented: $showAddTask) {
+                manager.checkCurrentUser()
+            } content: {
+                AddTaskView()
+                    .environment(manager)
+            }
+
         }
     }
 }

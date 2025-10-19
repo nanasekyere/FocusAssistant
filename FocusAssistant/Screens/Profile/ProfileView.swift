@@ -116,14 +116,13 @@ struct ProfileView: View {
                     Text(manager.errorMessage ?? "Unknown error")
                 }
                 .alert("Are you sure you want to sign out?", isPresented: $showSignOutView) {
+                    
                     Button("Sign Out") {
                         manager.signOut()
                     }
                     .foregroundStyle(.red)
                     
-                    Button(role: .cancel) {
-                        dismiss()
-                    }
+                    Button(role: .cancel) { }
                 }
             }
         }
