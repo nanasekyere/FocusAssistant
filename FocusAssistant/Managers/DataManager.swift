@@ -43,8 +43,6 @@ class DataManager {
         userSession?.uid ?? ""
     }
     
-    
-    
     // MARK: - Initialization
     init() {} // This is due to environment objects initialising before the App does, due to the way views work
     
@@ -70,68 +68,24 @@ class DataManager {
         listeners.forEach { $0.remove() }
     }
     
-    // MARK: - Auth State Management
-    private func setupAuthStateListener() {
-        authStateListener = auth().addStateDidChangeListener { [weak self] _, user in
-            Task { @MainActor in
-                self?.userSession = user
-                if user != nil {
-                    await self?.fetchUser()
-                    await self?.loadAllData()
-                } else {
-                    self?.clearUserData()
-                }
-            }
+    // MARK: - Data Loading
+    func loadAllData() async {
+        guard isAuthenticated else { return }
+        guard !isTest else { return }
+        isLoading = true
+        defer { isLoading = false }
+        
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.fetchTasks() }
+            group.addTask { await self.fetchFocusSessions() }
+            group.addTask { await self.fetchHabits() }
+            group.addTask { await self.fetchReminders() }
         }
     }
-    
-    func checkCurrentUser() {
-        self.userSession = auth().currentUser
-        if userSession != nil {
-            Task {
-                await fetchUser()
-                await loadAllData()
-            }
-        }
-    }
-    
-    private func clearUserData() {
-        currentUser = nil
-        tasks = []
-        focusSessions = []
-        habits = []
-        reminders = []
-        currentInsights = nil
-        listeners.forEach { $0.remove() }
-        listeners.removeAll()
-    }
-    
-    // MARK: - Collection References
-    private var usersCollection: CollectionReference {
-        db().collection("users")
-    }
-    
-    private var tasksCollection: CollectionReference {
-        db().collection("users").document(userId).collection("tasks")
-    }
-    
-    private var focusSessionsCollection: CollectionReference {
-        db().collection("users").document(userId).collection("focusSessions")
-    }
-    
-    private var habitsCollection: CollectionReference {
-        db().collection("users").document(userId).collection("habits")
-    }
-    
-    private var remindersCollection: CollectionReference {
-        db().collection("users").document(userId).collection("reminders")
-    }
-    
-    private var dailyStatsCollection: CollectionReference {
-        db().collection("users").document(userId).collection("dailyStats")
-    }
-    
-    // MARK: - Authentication Methods
+}
+
+// MARK: - Authentication Methods
+extension DataManager {
     func signIn(withEmail email: String, password: String) async throws {
         isLoading = true
         defer { isLoading = false }
@@ -258,8 +212,81 @@ class DataManager {
             }
         }
     }
+}
+
+// MARK: - Auth State Management
+extension DataManager {
+    private func setupAuthStateListener() {
+        authStateListener = auth().addStateDidChangeListener { [weak self] _, user in
+            Task { @MainActor in
+                self?.userSession = user
+                if user != nil {
+                    await self?.fetchUser()
+                    await self?.loadAllData()
+                } else {
+                    self?.clearUserData()
+                }
+            }
+        }
+    }
     
-    // MARK: - Task Management
+    func checkCurrentUser() {
+        self.userSession = auth().currentUser
+        if userSession != nil {
+            Task {
+                await fetchUser()
+                await loadAllData()
+            }
+        }
+    }
+    
+    private func clearUserData() {
+        currentUser = nil
+        tasks = []
+        focusSessions = []
+        habits = []
+        reminders = []
+        currentInsights = nil
+        listeners.forEach { $0.remove() }
+        listeners.removeAll()
+    }
+}
+
+// MARK: - Convenience Extensions
+extension DataManager {
+    var todaysTasks: [UserTask] {
+        tasks.filter { task in
+            if let dueDate = task.dueDate {
+                return Calendar.current.isDateInToday(dueDate)
+            }
+            if let scheduledDate = task.scheduledDate {
+                return Calendar.current.isDateInToday(scheduledDate)
+            }
+            return false
+        }
+    }
+    
+    var overdueTasks: [UserTask] {
+        tasks.filter { $0.isOverdue && $0.isCompleted == false}
+    }
+    
+    var activeFocusSession: FocusSession? {
+        focusSessions.first { $0.isActive }
+    }
+    
+    var upcomingReminders: [Reminder] {
+        let nextHour = Calendar.current.date(byAdding: .hour, value: 1, to: Date()) ?? Date()
+        return reminders.filter { $0.triggerDate <= nextHour && $0.isCompleted == false}
+    }
+    
+    var todaysHabits: [Habit] {
+        habits.filter { $0.shouldShowToday }
+    }
+}
+
+// MARK: - Task Management
+extension DataManager {
+    
     func createTask(_ task: UserTask) async throws {
         guard isAuthenticated else { return }
         
@@ -318,8 +345,10 @@ class DataManager {
             self.errorMessage = "Failed to fetch tasks: \(error.localizedDescription)"
         }
     }
-    
-    // MARK: - Focus Session Management
+}
+
+// MARK: - Focus Session Management
+extension DataManager {
     func startFocusSession(_ session: FocusSession) async throws {
         guard isAuthenticated else { return }
         
@@ -387,7 +416,10 @@ class DataManager {
         }
     }
     
-    // MARK: - Habit Management
+}
+
+// MARK: - Habit Management
+extension DataManager {
     func createHabit(_ habit: Habit) async throws {
         guard isAuthenticated else { return }
         
@@ -443,8 +475,10 @@ class DataManager {
             self.errorMessage = "Failed to fetch habits: \(error.localizedDescription)"
         }
     }
-    
-    // MARK: - Reminder Management
+}
+
+// MARK: - Reminder Management
+extension DataManager {
     func createReminder(_ reminder: Reminder) async throws {
         guard isAuthenticated else { return }
         
@@ -510,8 +544,10 @@ class DataManager {
             self.errorMessage = "Failed to fetch reminders: \(error.localizedDescription)"
         }
     }
-    
-    // MARK: - Analytics and Insights
+}
+
+// MARK: - Analytics and Insights
+extension DataManager {
     func generateInsights(for dateRange: DateInterval) async throws -> UserInsights {
         guard isAuthenticated else {
             throw NSError(domain: "DataManager", code: 401, userInfo: [NSLocalizedDescriptionKey: "Not authenticated"])
@@ -522,7 +558,7 @@ class DataManager {
         let completedSessions = focusSessions.filter { $0.isCompleted }
         insights.totalFocusTime = completedSessions.compactMap { $0.actualDuration }.reduce(0, +)
         insights.averageSessionLength = completedSessions.isEmpty ? 0 :
-            Double(insights.totalFocusTime) / Double(completedSessions.count)
+        Double(insights.totalFocusTime) / Double(completedSessions.count)
         
         insights.completedTasks = tasks.filter { $0.isCompleted }.count
         insights.completedHabits = habits.reduce(0) { $0 + $1.totalCompletions }
@@ -550,23 +586,37 @@ class DataManager {
             print("Failed to update daily stats: \(error.localizedDescription)")
         }
     }
-    
-    // MARK: - Data Loading
-    func loadAllData() async {
-        guard isAuthenticated else { return }
-        guard !isTest else { return }
-        isLoading = true
-        defer { isLoading = false }
-        
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask { await self.fetchTasks() }
-            group.addTask { await self.fetchFocusSessions() }
-            group.addTask { await self.fetchHabits() }
-            group.addTask { await self.fetchReminders() }
-        }
+}
+
+// MARK: - Collection References
+extension DataManager {
+    private var usersCollection: CollectionReference {
+        db().collection("users")
     }
     
-    // MARK: - Real-time Listeners
+    private var tasksCollection: CollectionReference {
+        db().collection("users").document(userId).collection("tasks")
+    }
+    
+    private var focusSessionsCollection: CollectionReference {
+        db().collection("users").document(userId).collection("focusSessions")
+    }
+    
+    private var habitsCollection: CollectionReference {
+        db().collection("users").document(userId).collection("habits")
+    }
+    
+    private var remindersCollection: CollectionReference {
+        db().collection("users").document(userId).collection("reminders")
+    }
+    
+    private var dailyStatsCollection: CollectionReference {
+        db().collection("users").document(userId).collection("dailyStats")
+    }
+}
+
+// MARK: - Real-time Listeners
+extension DataManager {
     func startListeningToTasks() {
         guard isAuthenticated else { return }
         
@@ -597,38 +647,7 @@ class DataManager {
     func startAllListeners() {
         guard isAuthenticated else { return }
         startListeningToTasks()
-        // Any future listens
+        // Any future listeners
     }
 }
 
-// MARK: - Convenience Extensions
-extension DataManager {
-    var todaysTasks: [UserTask] {
-        tasks.filter { task in
-            if let dueDate = task.dueDate {
-                return Calendar.current.isDateInToday(dueDate)
-            }
-            if let scheduledDate = task.scheduledDate {
-                return Calendar.current.isDateInToday(scheduledDate)
-            }
-            return false
-        }
-    }
-    
-    var overdueTasks: [UserTask] {
-        tasks.filter { $0.isOverdue && $0.isCompleted == false}
-    }
-    
-    var activeFocusSession: FocusSession? {
-        focusSessions.first { $0.isActive }
-    }
-    
-    var upcomingReminders: [Reminder] {
-        let nextHour = Calendar.current.date(byAdding: .hour, value: 1, to: Date()) ?? Date()
-        return reminders.filter { $0.triggerDate <= nextHour && $0.isCompleted == false}
-    }
-    
-    var todaysHabits: [Habit] {
-        habits.filter { $0.shouldShowToday }
-    }
-}
