@@ -40,10 +40,8 @@ struct TabBar: View {
                                 .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
                         }
                     }
-                    .onAppear {
-                        Task {
-                            await manager.loadAllData()
-                        }
+                    .task {
+                        await manager.loadAllData()
                     }
                         
                 }

@@ -85,7 +85,7 @@ class DataManager {
 }
 
 // MARK: - Authentication Methods
-extension DataManager {
+@MainActor extension DataManager {
     func signIn(withEmail email: String, password: String) async throws {
         isLoading = true
         defer { isLoading = false }
@@ -215,7 +215,7 @@ extension DataManager {
 }
 
 // MARK: - Auth State Management
-extension DataManager {
+@MainActor extension DataManager {
     private func setupAuthStateListener() {
         authStateListener = auth().addStateDidChangeListener { [weak self] _, user in
             Task { @MainActor in
@@ -330,6 +330,18 @@ extension DataManager {
         completedTask.updatedAt = Date()
         try await updateTask(completedTask)
         await updateDailyStats(completedTasks: 1)
+    }
+    
+    func uncompleteTask(_ task: UserTask) async throws {
+        guard isAuthenticated else { return }
+        guard task.isCompleted else { return }
+        
+        var completedTask = task
+        completedTask.isCompleted = false
+        completedTask.completedAt = nil
+        completedTask.updatedAt = Date()
+        try await updateTask(completedTask)
+        await updateDailyStats(completedTasks: -1)
     }
     
     func fetchTasks() async {

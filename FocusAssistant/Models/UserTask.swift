@@ -5,7 +5,7 @@
 //  Created by Nana Sekyere on 11/10/2025.
 //
 
-import Foundation
+import SwiftUI
 import Firebase
 import FirebaseFirestore
 
@@ -63,12 +63,12 @@ enum Priority: String, Codable, CaseIterable {
     case medium = "medium"
     case low = "low"
     
-    var color: String {
+    var color: Color {
         switch self {
-        case .urgent: return "red"
-        case .high: return "orange"
-        case .medium: return "yellow"
-        case .low: return "green"
+        case .urgent: return .red
+        case .high: return .orange
+        case .medium: return .yellow
+        case .low: return .green
         }
     }
 }
