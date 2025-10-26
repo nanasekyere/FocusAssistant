@@ -1,0 +1,106 @@
+// macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+// Thumbnails
+._*
+
+// Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+// Xcode
+// Build artifacts
+build/
+Build/
+DerivedData/
+*.xcarchive
+
+// Xcode workspace / user data
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+*.moved-aside
+
+// Xcode project files (safe to share)
+// Note: Keep .xcodeproj and .xcworkspace tracked.
+// Ignore user-specific project settings:
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+// Swift Package Manager
+.swiftpm/
+.build/
+Package.pins
+// Keep Package.resolved tracked for reproducible builds
+// (do NOT add Package.resolved to .gitignore for app projects)
+
+// CocoaPods
+Pods/
+// Keep Podfile.lock tracked to pin versions
+
+// Carthage
+Carthage/Build/
+Carthage/Checkouts/
+
+// Accio
+.Accio/
+
+// fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+// Keep Fastfile, Appfile, and configuration files tracked
+
+// Firebase
+// If you prefer not to commit Firebase config files, ignore these.
+// Remove these lines if you choose to keep them in source control.
+GoogleService-Info.plist
+GoogleService-Info-*.plist
+firebase_app_id_file.json
+crashlytics-build.properties
+
+// SPM/Xcode integration artifacts
+SourcePackages/
+
+// Archives and symbols
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+// Code coverage
+*.xccovreport
+*.xccovarchive
+
+// SwiftLint / SwiftFormat caches and generated files
+.swiftlint.cache
+
+// Logs
+*.log
+
+// Environment files
+.env
+.env.*
+
+// Temporary files
+*.swp
+*.swo
+*~
+
+// Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+DatabaseStructure.md
+ErrorHandlingStrategy.md
+ErrorHandlingExampleView.swift
