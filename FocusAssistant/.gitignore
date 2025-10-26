@@ -102,3 +102,5 @@ timeline.xctimeline
 playground.xcworkspace
 
 DatabaseStructure.md
+ErrorHandlingStrategy.md
+ErrorHandlingExampleView.swift
