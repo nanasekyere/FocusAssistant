@@ -15,6 +15,37 @@ enum TabSelection {
     case insights
 }
 
+struct TabContentView<Content: View>: View {
+    let content: Content
+    @Environment(DataManager.self) private var manager
+    @Binding var showAddTask: Bool
+    let firstName: String
+    
+    init(firstName: String, showAddTask: Binding<Bool>, @ViewBuilder content: () -> Content) {
+        self.firstName = firstName
+        self._showAddTask = showAddTask
+        self.content = content()
+    }
+    
+    var body: some View {
+        NavigationStack {
+            switch manager.loadingState {
+            case .loading:
+                ProgressView()
+            case .error(let error):
+                ContentUnavailableView("Unable to load data", systemImage: "exclamationmark.triangle", description: Text(error.localizedDescription))
+            case .idle:
+                content
+                    .environment(manager)
+                    .applyToolbar(firstName: firstName, showAddTask: $showAddTask)
+            }
+        }
+        .task {
+            await manager.loadAllData()
+        }
+    }
+}
+
 struct TabBar: View {
     @Environment(DataManager.self) private var manager
     @State private var selectedTab: TabSelection = .home
@@ -24,49 +55,34 @@ struct TabBar: View {
         if let user = manager.currentUser {
             TabView(selection: $selectedTab) {
                 Tab("Home", systemImage: "house.fill", value: .home) {
-                    NavigationStack {
+                    TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
                         HomeView()
-                            .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
                     }
                 }
                 
                 Tab("Tasks", systemImage: "list.bullet.clipboard", value: .tasks) {
-                    NavigationStack {
-                        if manager.isLoading {
-                            ProgressView()
-                        } else {
-                            TasksView()
-                                .environment(manager)
-                                .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
-                        }
+                    TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
+                        TasksView()
                     }
-                    .task {
-                        await manager.loadAllData()
-                    }
-                        
                 }
                 
                 Tab("Sessions", systemImage: "brain", value: .sessions) {
-                    NavigationStack {
+                    TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
                         ProfileView()
-                            .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
                     }
                 }
                 
                 Tab("Habits", systemImage: "repeat.circle.fill", value: .habits) {
-                    NavigationStack {
+                    TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
                         ProfileView()
-                            .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
                     }
                 }
                 
                 Tab("Insights", systemImage: "chart.bar.fill", value: .insights) {
-                    NavigationStack {
+                    TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
                         ProfileView()
-                            .applyToolbar(firstName: user.firstName, showAddTask: $showAddTask)
                     }
                 }
-            
             }
             .sheet(isPresented: $showAddTask) {
                 manager.checkCurrentUser()
@@ -74,7 +90,7 @@ struct TabBar: View {
                 AddTaskView()
                     .environment(manager)
             }
-
+            
         }
     }
 }
