@@ -90,7 +90,21 @@ struct TabBar: View {
                 AddTaskView()
                     .environment(manager)
             }
-            
+            .alert(
+                "Error",
+                isPresented: Binding(
+                    get: { manager.showingAlert },
+                    set: { _ in manager.clearAlertError() }
+                )
+            ) {
+                Button("OK") {
+                    manager.clearAlertError()
+                }
+            } message: {
+                if let alertError = manager.alertError {
+                    Text(alertError.message)
+                }
+            }
         }
     }
 }
