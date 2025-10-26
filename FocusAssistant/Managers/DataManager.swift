@@ -10,7 +10,7 @@ import FirebaseAuth
 import FirebaseFirestore
 import Observation
 
-enum DataManagerError: LocalizedError {
+enum DataManagerError: LocalizedError, Equatable {
     enum Entity: String {
         case user = "user"
         case task = "task"
@@ -39,12 +39,15 @@ enum DataManagerError: LocalizedError {
     }
 
     case notAuthenticated
+    case passwordMismatch
     case operationFailed(entity: Entity, action: Action)
 
-    var errorDescription: String {
+    var errorDescription: String? {
         switch self {
         case .notAuthenticated:
             return "Not authenticated"
+        case .passwordMismatch:
+            return "Passwords do not match"
         case let .operationFailed(entity, action):
             switch (entity, action) {
             case (.auth, .signIn): return "Failed to sign in"
@@ -82,7 +85,7 @@ enum DataManagerError: LocalizedError {
     }
 }
 
-enum LoadingState {
+enum LoadingState: Equatable {
     case idle
     case loading
     case error(DataManagerError)
@@ -153,7 +156,6 @@ class DataManager {
         // This is only used in the previewer
         self.currentUser = currentUser
     }
-    
     init(isTest: Bool) {
         self.isTest = isTest
     }
@@ -161,6 +163,16 @@ class DataManager {
     func start() {
         setupAuthStateListener()
         checkCurrentUser()
+    }
+    
+    func checkCurrentUser() {
+        self.userSession = auth().currentUser
+        if userSession != nil {
+            Task {
+                await fetchUser()
+                await loadAllData()
+            }
+        }
     }
     
     @MainActor
@@ -204,8 +216,12 @@ class DataManager {
         }
     }
     
-    func signUp(withEmail email: String, password: String, fullName: String) async throws {
+    func signUp(withEmail email: String, password: String, confirmPassword: String, fullName: String) async throws {
         loadingState = .loading
+        guard password == confirmPassword else {
+            alertError = AlertError.dataManagerError(DataManagerError.passwordMismatch)
+            throw DataManagerError.passwordMismatch
+        }
         defer { loadingState = .idle }
         
         do {
@@ -320,16 +336,6 @@ class DataManager {
                 } else {
                     self?.clearUserData()
                 }
-            }
-        }
-    }
-    
-    func checkCurrentUser() {
-        self.userSession = auth().currentUser
-        if userSession != nil {
-            Task {
-                await fetchUser()
-                await loadAllData()
             }
         }
     }

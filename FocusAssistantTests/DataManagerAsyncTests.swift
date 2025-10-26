@@ -23,7 +23,7 @@ struct DataManagerAsyncTests {
         
         // This test verifies the structure exists
         // In a real test, you would mock Firestore
-        #expect(manager.isLoading == false)
+        #expect(manager.loadingState == .idle)
         
         // Verify the loadAllData method exists and can be called
         await manager.loadAllData()
@@ -215,7 +215,8 @@ struct DataManagerAsyncTests {
         _ = await task1
         _ = try await task2
         
-        #expect(manager.errorMessage == nil)
+        #expect(manager.loadingState == .idle)
+        #expect(manager.showingAlert == false)
     }
     
     // MARK: - Performance Tests

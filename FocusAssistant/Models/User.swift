@@ -69,13 +69,6 @@ enum FontSize: String, Codable, CaseIterable {
     case extraLarge = "extraLarge"
 }
 
-enum FocusMode: String, Codable, CaseIterable {
-    case deepWork = "deepWork"
-    case creative = "creative"
-    case learning = "learning"
-    case routine = "routine"
-}
-
 extension User {
     static var example: User {
         User(id: NSUUID().uuidString, fullName: "Nana Sekyere", email: "nanasekyere@example.com")

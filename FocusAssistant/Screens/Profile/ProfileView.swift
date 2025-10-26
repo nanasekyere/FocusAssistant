@@ -108,12 +108,20 @@ struct ProfileView: View {
                 .padding(.horizontal, 20)
                 .frame(maxWidth: .infinity)
                 .background(Color(.systemBackground))
-                .alert("Sign out error", isPresented: $manager.showError) {
+                .alert(
+                    "Error",
+                    isPresented: Binding(
+                        get: { manager.showingAlert },
+                        set: { _ in manager.clearAlertError() }
+                    )
+                ) {
                     Button("OK") {
-                        manager.showError = false
+                        manager.clearAlertError()
                     }
                 } message: {
-                    Text(manager.errorMessage ?? "Unknown error")
+                    if let alertError = manager.alertError {
+                        Text(alertError.message)
+                    }
                 }
                 .alert("Are you sure you want to sign out?", isPresented: $showSignOutView) {
                     

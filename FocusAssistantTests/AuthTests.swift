@@ -65,7 +65,7 @@ private final class FakeStore: FirestoreLike {
     }
 }
 
-// MARK: - A thin wrapper around AuthVM to inject fakes
+// MARK: - A thin wrapper around DataManager to inject fakes
 // We can subclass and override the Firebase-interacting methods in tests.
 private final class TestableDataManager: DataManager {
     private let auth: AuthLike
@@ -91,10 +91,9 @@ private final class TestableDataManager: DataManager {
         do {
             let user = try await auth.signIn(email: email, password: password)
             await fetchUserOverride(uid: user.uid)
-            self.showError = false
+            self.alertError = nil
         } catch {
-            self.errorMessage = error.localizedDescription
-            self.showError = true
+            self.alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .auth, action: .signIn))
         }
     }
 
@@ -104,10 +103,9 @@ private final class TestableDataManager: DataManager {
             let new = User(id: user.uid, fullName: fullname, email: email)
             try await store.setUser(new)
             await fetchUserOverride(uid: user.uid)
-            self.showError = false
+            self.alertError = nil
         } catch {
-            self.errorMessage = error.localizedDescription
-            self.showError = true
+            self.alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .auth, action: .signUp))
         }
     }
 
@@ -116,9 +114,9 @@ private final class TestableDataManager: DataManager {
             try auth.signOut()
             self.userSession = nil
             self.currentUser = nil
+            self.alertError = nil
         } catch {
-            self.errorMessage = "Failed to sign out with error \(error.localizedDescription)"
-            self.showError = true
+            self.alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .auth, action: .signOut))
         }
     }
 
@@ -144,8 +142,8 @@ struct AuthTests {
         await vm.signInTest(email: "ada@example.com", password: "correct-horse")
 
         #expect(vm.currentUser?.id == existing.id)
-        #expect(vm.showError == false)
-        #expect(vm.errorMessage == nil || vm.errorMessage?.isEmpty == true)
+        #expect(vm.alertError == nil)
+        #expect(vm.showingAlert == false)
     }
 
     @MainActor @Test("Sign in failure sets error state")
@@ -158,8 +156,11 @@ struct AuthTests {
         await vm.signInTest(email: "ada@example.com", password: "wrong")
 
         #expect(vm.currentUser == nil)
-        #expect(vm.showError == true)
-        #expect(vm.errorMessage?.contains("Invalid credentials") == true)
+        #expect(vm.showingAlert == true)
+        #expect(vm.alertError != nil)
+        if case .dataManagerError(let error) = vm.alertError {
+            #expect(error.errorDescription?.contains("sign in") == true)
+        }
     }
 
     @MainActor @Test("Create user writes to store and fetches currentUser")
@@ -172,7 +173,25 @@ struct AuthTests {
 
         #expect(vm.currentUser?.email == "grace@example.com")
         #expect(store.users["created-uid"]?.fullName.contains("Grace") == true)
-        #expect(vm.showError == false)
+        #expect(vm.alertError == nil)
+        #expect(vm.showingAlert == false)
+    }
+
+    @MainActor @Test("Create user failure sets error state")
+    func createUserFailure() async throws {
+        let auth = FakeAuth()
+        auth.createError = NSError(domain: "Auth", code: 400, userInfo: [NSLocalizedDescriptionKey: "Email already in use"])
+        let store = FakeStore()
+        let vm = TestableDataManager(auth: auth, store: store)
+
+        await vm.createUserTest(email: "duplicate@example.com", password: "password", fullname: "Test User")
+
+        #expect(vm.currentUser == nil)
+        #expect(vm.showingAlert == true)
+        #expect(vm.alertError != nil)
+        if case .dataManagerError(let error) = vm.alertError {
+            #expect(error.errorDescription?.contains("sign up") == true)
+        }
     }
 
     @MainActor @Test("Sign out clears session and user")
@@ -189,5 +208,29 @@ struct AuthTests {
         vm.signOutTest()
 
         #expect(vm.currentUser == nil)
+        #expect(vm.alertError == nil)
+    }
+
+    @MainActor @Test("Sign out failure sets error state")
+    func signOutFailure() async throws {
+        let auth = FakeAuth()
+        auth.signOutError = NSError(domain: "Auth", code: 500, userInfo: [NSLocalizedDescriptionKey: "Sign out failed"])
+        let store = FakeStore()
+        // Seed a user
+        let seeded = User(id: "signed-in-uid", fullName: "Test User", email: "t@example.com")
+        store.users[seeded.id] = seeded
+        let vm = TestableDataManager(auth: auth, store: store)
+        await vm.signInTest(email: "t@example.com", password: "ok")
+        #expect(vm.currentUser != nil)
+
+        vm.signOutTest()
+
+        // User should still be there since sign out failed
+        #expect(vm.currentUser != nil)
+        #expect(vm.showingAlert == true)
+        #expect(vm.alertError != nil)
+        if case .dataManagerError(let error) = vm.alertError {
+            #expect(error.errorDescription?.contains("sign out") == true)
+        }
     }
 }

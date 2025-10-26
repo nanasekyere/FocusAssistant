@@ -26,8 +26,8 @@ struct DataManagerTests {
         #expect(manager.habits.isEmpty)
         #expect(manager.reminders.isEmpty)
         #expect(manager.currentInsights == nil)
-        #expect(manager.isLoading == false)
-        #expect(manager.errorMessage == nil)
+        #expect(manager.loadingState == .idle)
+        #expect(manager.alertError == nil)
     }
     
     // MARK: - Task Management Tests
@@ -465,31 +465,46 @@ struct DataManagerErrorTests {
     func managerHandlesLoadingState() {
         let manager = DataManager(isTest: true)
         
-        // Initial state should not be loading
-        #expect(manager.isLoading == false)
+        // Initial state should be idle
+        #expect(manager.loadingState == .idle)
         
         // Simulate loading state (normally set by async methods)
-        manager.isLoading = true
-        #expect(manager.isLoading == true)
+        manager.loadingState = .loading
+        #expect(manager.loadingState == .loading)
         
-        manager.isLoading = false
-        #expect(manager.isLoading == false)
+        // Simulate error state
+        let testError = DataManagerError.operationFailed(entity: .task, action: .fetch)
+        manager.loadingState = .error(testError)
+        if case .error(let error) = manager.loadingState {
+            #expect(error.errorDescription?.contains("fetch") == true)
+        }
+        
+        // Back to idle
+        manager.loadingState = .idle
+        #expect(manager.loadingState == .idle)
     }
     
-    @Test("Manager handles error messages")
-    func managerHandlesErrorMessages() {
+    @Test("Manager handles alert errors")
+    func managerHandlesAlertErrors() {
         let manager = DataManager(isTest: true)
         
-        #expect(manager.errorMessage == nil)
+        #expect(manager.alertError == nil)
+        #expect(manager.showingAlert == false)
         
-        let testError = "Test error message"
-        manager.errorMessage = testError
+        let testError = DataManagerError.operationFailed(entity: .auth, action: .signIn)
+        manager.alertError = AlertError.dataManagerError(testError)
         
-        #expect(manager.errorMessage == testError)
+        #expect(manager.alertError != nil)
+        #expect(manager.showingAlert == true)
+        
+        if case .dataManagerError(let error) = manager.alertError {
+            #expect(error.errorDescription?.contains("sign in") == true)
+        }
         
         // Clear error
-        manager.errorMessage = nil
-        #expect(manager.errorMessage == nil)
+        manager.clearAlertError()
+        #expect(manager.alertError == nil)
+        #expect(manager.showingAlert == false)
     }
 }
 
@@ -499,7 +514,6 @@ struct DataManagerModelValidationTests {
     @Test("UserTask model validation")
     func userTaskValidation() {
         let task = UserTask(
-
             title: "Valid Task",
             priority: .high,
             difficulty: .hard,

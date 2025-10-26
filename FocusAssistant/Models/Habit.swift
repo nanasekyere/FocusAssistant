@@ -111,6 +111,23 @@ enum Weekday: String, Codable, CaseIterable {
         case .sunday: return "Sun"
         }
     }
+    
+    var calendarWeekday: Int {
+        switch self {
+        case .sunday: return 1
+        case .monday: return 2
+        case .tuesday: return 3
+        case .wednesday: return 4
+        case .thursday: return 5
+        case .friday: return 6
+        case .saturday: return 7
+        }
+    }
+    
+    static var today: Weekday? {
+        let todayWeekday = Calendar.current.component(.weekday, from: Date())
+        return Weekday.allCases.first { $0.calendarWeekday == todayWeekday }
+    }
 }
 
 enum CompletionMethod: String, Codable {
@@ -122,16 +139,15 @@ enum CompletionMethod: String, Codable {
 // Extensions
 extension Habit {
     var shouldShowToday: Bool {
-        let today = Calendar.current.component(.weekday, from: Date())
-        let todayWeekday = Weekday.allCases[today - 2] // Adjust for Calendar weekday numbering
-        
         switch frequency {
         case .daily:
             return true
         case .weekly:
             return false // Handle weekly separately
         case .custom:
-            return specificDays?.contains(todayWeekday) ?? false
+            guard let specificDays = specificDays,
+                  let today = Weekday.today else { return false }
+            return specificDays.contains(today)
         }
     }
     

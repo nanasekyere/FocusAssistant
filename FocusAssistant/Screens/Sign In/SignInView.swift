@@ -90,12 +90,7 @@ struct SignInView: View {
                 Group {
                     AsyncButton {
                         if signingUp {
-                            if password != confirmingPassword {
-                                manager.errorMessage = "Passwords don't match"
-                                manager.showError.toggle()
-                            } else {
-                                try await manager.signUp(withEmail: email, password: password, fullName: firstName + " " + lastName)
-                            }
+                            try await manager.signUp(withEmail: email, password: password, confirmPassword: confirmingPassword, fullName: firstName + " " + lastName)
                         } else {
                             try await manager.signIn(withEmail: email, password: password)
                         }
@@ -133,12 +128,20 @@ struct SignInView: View {
             }
         }
         .padding(.horizontal, 20)
-        .alert("Login error", isPresented: $manager.showError) {
+        .alert(
+            "Error",
+            isPresented: Binding(
+                get: { manager.showingAlert },
+                set: { _ in manager.clearAlertError() }
+            )
+        ) {
             Button("OK") {
-                manager.showError = false
+                manager.clearAlertError()
             }
         } message: {
-            Text(manager.errorMessage ?? "Unknown error")
+            if let alertError = manager.alertError {
+                Text(alertError.message)
+            }
         }
     }
 }

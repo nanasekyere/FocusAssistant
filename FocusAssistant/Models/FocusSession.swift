@@ -131,6 +131,57 @@ enum NoiseLevel: String, Codable, CaseIterable {
     case veryLoud = "veryLoud"
 }
 
+enum FocusMode: String, Codable, CaseIterable {
+    case deepWork = "deepWork"
+    case creative = "creative"
+    case learning = "learning"
+    case routine = "routine"
+    case planning = "planning"
+    case communication = "communication"
+    case research = "research"
+    case maintenance = "maintenance"
+    
+    var description: String {
+        switch self {
+        case .deepWork: return "Deep Work"
+        case .creative: return "Creative Work"
+        case .learning: return "Learning"
+        case .routine: return "Routine Tasks"
+        case .planning: return "Planning"
+        case .communication: return "Communication"
+        case .research: return "Research"
+        case .maintenance: return "Maintenance"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .deepWork: return "brain.head.profile"
+        case .creative: return "paintbrush"
+        case .learning: return "book"
+        case .routine: return "list.bullet"
+        case .planning: return "calendar"
+        case .communication: return "message"
+        case .research: return "magnifyingglass"
+        case .maintenance: return "wrench"
+        }
+    }
+    
+    var suggestedDuration: Int {
+        switch self {
+        case .deepWork: return 90 // 90 minutes for deep work
+        case .creative: return 120 // 2 hours for creative work
+        case .learning: return 50 // 50 minutes for learning
+        case .routine: return 25 // 25 minutes for routine tasks
+        case .planning: return 30 // 30 minutes for planning
+        case .communication: return 15 // 15 minutes for communication
+        case .research: return 60 // 60 minutes for research
+        case .maintenance: return 20 // 20 minutes for maintenance
+        }
+    }
+}
+
+
 // Extensions for focus session management
 extension FocusSession {
     var isActive: Bool {
