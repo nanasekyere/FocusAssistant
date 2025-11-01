@@ -9,7 +9,7 @@ import SwiftUI
 import Firebase
 import FirebaseFirestore
 
-struct UserTask: Identifiable, Codable {
+struct UserTask: Identifiable, Codable, FirestoreModel {
     @DocumentID var id: String?
     
     var title: String

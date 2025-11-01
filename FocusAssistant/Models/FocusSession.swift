@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseFirestore
 
-struct FocusSession: Identifiable, Codable {
+struct FocusSession: Identifiable, Codable, FirestoreModel {
     @DocumentID var id: String?
     
     var taskId: String? // Optional - can be a general focus session

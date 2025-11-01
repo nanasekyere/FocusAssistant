@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseFirestore
 
-struct Reminder: Identifiable, Codable {
+struct Reminder: Identifiable, Codable, FirestoreModel {
     @DocumentID var id: String?
     
     var title: String

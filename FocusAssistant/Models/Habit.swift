@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseFirestore
 
-struct Habit: Identifiable, Codable {
+struct Habit: Identifiable, Codable, FirestoreModel {
     @DocumentID var id: String?
 
     var title: String

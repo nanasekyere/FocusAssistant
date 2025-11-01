@@ -10,109 +10,6 @@ import FirebaseAuth
 import FirebaseFirestore
 import Observation
 
-enum DataManagerError: LocalizedError, Equatable {
-    enum Entity: String {
-        case user = "user"
-        case task = "task"
-        case focusSession = "focus session"
-        case habit = "habit"
-        case reminder = "reminder"
-        case stats = "daily stats"
-        case auth = "authentication"
-    }
-    enum Action: String {
-        case fetch = "fetch"
-        case create = "create"
-        case update = "update"
-        case delete = "delete"
-        case complete = "complete"
-        case uncomplete = "uncomplete"
-        case start = "start"
-        case pause = "pause"
-        case signIn = "sign in"
-        case signUp = "sign up"
-        case signOut = "sign out"
-        case resetPassword = "send password reset"
-        case profileUpdate = "update profile"
-        case load = "load"
-        case snooze = "snooze"
-    }
-
-    case notAuthenticated
-    case passwordMismatch
-    case operationFailed(entity: Entity, action: Action)
-
-    var errorDescription: String? {
-        switch self {
-        case .notAuthenticated:
-            return "Not authenticated"
-        case .passwordMismatch:
-            return "Passwords do not match"
-        case let .operationFailed(entity, action):
-            switch (entity, action) {
-            case (.auth, .signIn): return "Failed to sign in"
-            case (.auth, .signUp): return "Failed to sign up"
-            case (.auth, .signOut): return "Failed to sign out"
-            case (.auth, .resetPassword): return "Failed to send password reset"
-            case (.user, .profileUpdate): return "Failed to update profile"
-            case (.user, .delete): return "Failed to delete account"
-            case (.user, .load): return "Failed to load data"
-            case (.task, .fetch): return "Failed to fetch tasks"
-            case (.task, .create): return "Failed to create task"
-            case (.task, .update): return "Failed to update task"
-            case (.task, .delete): return "Failed to delete task"
-            case (.task, .complete): return "Failed to complete task"
-            case (.task, .uncomplete): return "Failed to uncomplete task"
-            case (.focusSession, .fetch): return "Failed to fetch focus sessions"
-            case (.focusSession, .start): return "Failed to start focus session"
-            case (.focusSession, .pause): return "Failed to pause focus session"
-            case (.focusSession, .update): return "Failed to update focus session"
-            case (.focusSession, .complete): return "Failed to complete focus session"
-            case (.habit, .fetch): return "Failed to fetch habits"
-            case (.habit, .create): return "Failed to create habit"
-            case (.habit, .update): return "Failed to update habit"
-            case (.habit, .complete): return "Failed to complete habit"
-            case (.reminder, .fetch): return "Failed to fetch reminders"
-            case (.reminder, .create): return "Failed to create reminder"
-            case (.reminder, .update): return "Failed to update reminder"
-            case (.reminder, .complete): return "Failed to complete reminder"
-            case (.reminder, .snooze): return "Failed to snooze reminder"
-            case (.stats, .update): return "Failed to update daily stats"
-            default:
-                return "Operation failed"
-            }
-        }
-    }
-}
-
-enum LoadingState: Equatable {
-    case idle
-    case loading
-    case error(DataManagerError)
-}
-
-enum AlertError: Identifiable {
-    case dataManagerError(DataManagerError)
-    
-    var id: String {
-        switch self {
-        case .dataManagerError(let error):
-            return error.localizedDescription
-        }
-    }
-    
-    var title: String {
-        "Error"
-    }
-    
-    var message: String {
-        switch self {
-        case .dataManagerError(let error):
-            return error.localizedDescription
-        }
-    }
-}
-
 @MainActor
 @Observable
 class DataManager {
@@ -128,6 +25,11 @@ class DataManager {
     var habits: [Habit] = []
     var reminders: [Reminder] = []
     var currentInsights: UserInsights?
+    
+    // MARK: - Data Repositories
+    private var taskRepository: FirestoreRepository<UserTask>?
+    private var habitRepository: FirestoreRepository<Habit>?
+    private var reminderRepository: FirestoreRepository<Reminder>?
     
     // MARK: - UI State
     var loadingState: LoadingState = .idle
@@ -168,8 +70,10 @@ class DataManager {
     func checkCurrentUser() {
         self.userSession = auth().currentUser
         if userSession != nil {
+            setupRepositories()
+            
             Task {
-                await fetchUser()
+                try await fetchUser()
                 await loadAllData()
             }
         }
@@ -190,11 +94,11 @@ class DataManager {
         loadingState = .loading
         defer { loadingState = .idle }
         
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask { await self.fetchTasks() }
-            group.addTask { await self.fetchFocusSessions() }
-            group.addTask { await self.fetchHabits() }
-            group.addTask { await self.fetchReminders() }
+        await withThrowingTaskGroup(of: Void.self) { group in
+            group.addTask { try await self.fetchTasks() }
+            group.addTask { try await self.fetchFocusSessions() }
+            group.addTask { try await self.fetchHabits() }
+            group.addTask { try await self.fetchReminders() }
         }
     }
 }
@@ -208,7 +112,7 @@ class DataManager {
         do {
             let result = try await auth().signIn(withEmail: email, password: password)
             self.userSession = result.user
-            await fetchUser()
+            try await fetchUser()
             await loadAllData()
         } catch {
             loadingState = .error(DataManagerError.operationFailed(entity: .auth, action: .signIn))
@@ -219,7 +123,7 @@ class DataManager {
     func signUp(withEmail email: String, password: String, confirmPassword: String, fullName: String) async throws {
         loadingState = .loading
         guard password == confirmPassword else {
-            alertError = AlertError.dataManagerError(DataManagerError.passwordMismatch)
+            alertError = .passwordMismatch
             throw DataManagerError.passwordMismatch
         }
         defer { loadingState = .idle }
@@ -231,7 +135,7 @@ class DataManager {
             let user = User(id: result.user.uid, fullName: fullName, email: email)
             try usersCollection.document(user.id).setData(from: user)
             
-            await fetchUser()
+            try await fetchUser()
         } catch {
             loadingState = .error(DataManagerError.operationFailed(entity: .auth, action: .signUp))
             throw error
@@ -254,7 +158,7 @@ class DataManager {
         do {
             try await auth().sendPasswordReset(withEmail: email)
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .auth, action: .resetPassword))
+            alertError = .failed(.auth, .resetPassword)
             throw error
         }
     }
@@ -289,18 +193,19 @@ class DataManager {
             ])
             currentUser?.fullName = fullName
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .user, action: .profileUpdate))
+            alertError = .failed(.user, .profileUpdate)
             throw error
         }
     }
     
-    private func fetchUser() async {
+    private func fetchUser() async throws {
         do {
             let snapshot = try await usersCollection.document(userId).getDocument()
             guard snapshot.exists else { return }
             self.currentUser = try snapshot.data(as: User.self)
         } catch {
             loadingState = .error(DataManagerError.operationFailed(entity: .user, action: .fetch))
+            throw error
         }
     }
     
@@ -331,7 +236,7 @@ class DataManager {
             Task { @MainActor in
                 self?.userSession = user
                 if user != nil {
-                    await self?.fetchUser()
+                    try await self?.fetchUser()
                     await self?.loadAllData()
                 } else {
                     self?.clearUserData()
@@ -393,51 +298,45 @@ extension DataManager {
 extension DataManager {
     
     func createTask(_ task: UserTask) async throws {
-        guard isAuthenticated else { return }
+        guard let repo = taskRepository else { throw DataManagerError.notAuthenticated }
         
         do {
-            let encodedTask = try Firestore.Encoder().encode(task)
-            guard let id = task.id else {
-                throw NSError(domain: "DataManager", code: 400, userInfo: [NSLocalizedDescriptionKey: "Task ID is missing"])
-            }
-            try await tasksCollection.document(id).setData(encodedTask)
-            await fetchTasks()
+            try await repo.create(task)
+            try await fetchTasks()
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .task, action: .create))
-            throw error
+            throw DataManagerError.operationFailed(entity: .task, action: .create)
         }
     }
     
     func updateTask(_ task: UserTask) async throws {
-        guard isAuthenticated else { return }
-        
+        guard let repo = taskRepository else { throw DataManagerError.notAuthenticated }
         do {
-            var updatedTask = task
-            updatedTask.updatedAt = Date()
-            let encodedTask = try Firestore.Encoder().encode(updatedTask)
-            guard let id = task.id else {
-                throw NSError(domain: "DataManager", code: 400, userInfo: [NSLocalizedDescriptionKey: "Task ID is missing"])
-            }
-            try await tasksCollection.document(id).setData(encodedTask, merge: true)
-            await fetchTasks()
+            try await repo.update(task)
+            try await fetchTasks()
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .task, action: .update))
-            throw error
+            throw DataManagerError.operationFailed(entity: .task, action: .update)
         }
     }
     
     func deleteTask(_ task: UserTask) async throws {
-        guard isAuthenticated else { return }
-        
+        guard let repo = taskRepository else { throw DataManagerError.notAuthenticated }
         do {
-            guard let id = task.id else {
-                throw NSError(domain: "DataManager", code: 400, userInfo: [NSLocalizedDescriptionKey: "Task ID is missing"])
-            }
-            try await tasksCollection.document(id).delete()
-            await fetchTasks()
+            try await repo.delete(task)
+            try await fetchTasks()
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .task, action: .delete))
-            throw error
+            throw DataManagerError.operationFailed(entity: .task, action: .delete)
+        }
+  
+    }
+    
+    func fetchTasks() async throws {
+        guard let repo = taskRepository else { return }
+        do {
+            tasks = try await repo.fetchAll { query in
+                query.order(by: "createdAt", descending: true)
+            }
+        } catch {
+            throw DataManagerError.operationFailed(entity: .task, action: .fetch)
         }
     }
     
@@ -450,9 +349,9 @@ extension DataManager {
             completedTask.completedAt = Date()
             completedTask.updatedAt = Date()
             try await updateTask(completedTask)
-            await updateDailyStats(completedTasks: 1)
+            try await updateDailyStats(completedTasks: 1)
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .task, action: .complete))
+            alertError = .failed(.task, .complete)
             throw error
         }
     }
@@ -467,24 +366,10 @@ extension DataManager {
             completedTask.completedAt = nil
             completedTask.updatedAt = Date()
             try await updateTask(completedTask)
-            await updateDailyStats(completedTasks: -1)
+            try await updateDailyStats(completedTasks: -1)
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .task, action: .uncomplete))
+            alertError = .failed(.task, .uncomplete)
             throw error
-        }
-    }
-    
-    func fetchTasks() async {
-        guard isAuthenticated else { return }
-        do {
-            let snapshot = try await tasksCollection
-                .order(by: "createdAt", descending: true)
-                .getDocuments()
-            self.tasks = snapshot.documents.compactMap { doc in
-                try? doc.data(as: UserTask.self)
-            }
-        } catch {
-            self.loadingState = .error(DataManagerError.operationFailed(entity: .task, action: .fetch))
         }
     }
 }
@@ -504,9 +389,9 @@ extension DataManager {
                 throw NSError(domain: "DataManager", code: 400, userInfo: [NSLocalizedDescriptionKey: "Session ID is missing"])
             }
             try await focusSessionsCollection.document(id).setData(encodedSession)
-            await fetchFocusSessions()
+            try await fetchFocusSessions()
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .focusSession, action: .start))
+            alertError = .failed(.focusSession, .start)
             throw error
         }
     }
@@ -533,9 +418,9 @@ extension DataManager {
             completedSession.updatedAt = Date()
             
             try await updateFocusSession(completedSession)
-            await updateDailyStats(focusTime: actualDuration)
+            try await updateDailyStats(focusTime: actualDuration)
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .focusSession, action: .complete))
+            alertError = .failed(.focusSession, .complete)
             throw error
         }
     }
@@ -549,14 +434,14 @@ extension DataManager {
                 throw NSError(domain: "DataManager", code: 400, userInfo: [NSLocalizedDescriptionKey: "Session ID is missing"])
             }
             try await focusSessionsCollection.document(id).setData(encodedSession, merge: true)
-            await fetchFocusSessions()
+            try await fetchFocusSessions()
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .focusSession, action: .update))
+            alertError = .failed(.focusSession, .update)
             throw error
         }
     }
     
-    func fetchFocusSessions() async {
+    func fetchFocusSessions() async throws {
         guard isAuthenticated else { return }
         
         do {
@@ -569,7 +454,8 @@ extension DataManager {
                 try? doc.data(as: FocusSession.self)
             }
         } catch {
-            self.loadingState = .error(DataManagerError.operationFailed(entity: .focusSession, action: .fetch))
+            alertError = .failed(.focusSession, .fetch)
+            throw error
         }
     }
     
@@ -578,17 +464,48 @@ extension DataManager {
 // MARK: - Habit Management
 extension DataManager {
     func createHabit(_ habit: Habit) async throws {
-        guard isAuthenticated else { return }
+        guard let repo = habitRepository else { throw DataManagerError.notAuthenticated }
         
         do {
-            let encodedHabit = try Firestore.Encoder().encode(habit)
-            guard let id = habit.id else {
-                throw NSError(domain: "DataManager", code: 400, userInfo: [NSLocalizedDescriptionKey: "Habit ID is missing"])
-            }
-            try await habitsCollection.document(id).setData(encodedHabit)
-            await fetchHabits()
+            try await repo.create(habit)
+            try await fetchHabits()
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .habit, action: .create))
+            alertError = .failed(.habit, .create)
+            throw error
+        }
+    }
+    
+    func updateHabit(_ habit: Habit) async throws {
+        guard let repo = habitRepository else { throw DataManagerError.notAuthenticated }
+        do {
+            try await repo.update(habit)
+            try await fetchHabits()
+        } catch {
+            alertError = .failed(.habit, .update)
+            throw error
+        }
+    }
+    
+    func deleteHabit(_ habit: Habit) async throws {
+        guard let repo = habitRepository else { throw DataManagerError.notAuthenticated }
+        do {
+            try await repo.delete(habit)
+            try await fetchHabits()
+        } catch {
+            alertError = .failed(.habit, .delete)
+            throw error
+        }
+  
+    }
+    
+    func fetchHabits() async throws {
+        guard let repo = habitRepository else { return }
+        do {
+            habits = try await repo.fetchAll { query in
+                query.order(by: "createdAt", descending: true)
+            }
+        } catch {
+            alertError = .failed(.habit, .fetch)
             throw error
         }
     }
@@ -609,42 +526,10 @@ extension DataManager {
             updatedHabit.updatedAt = Date()
             
             try await updateHabit(updatedHabit)
-            await updateDailyStats(completedHabits: 1)
+            try await updateDailyStats(completedHabits: 1)
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .habit, action: .complete))
+            alertError = .failed(.habit, .complete)
             throw error
-        }
-    }
-    
-    func updateHabit(_ habit: Habit) async throws {
-        guard isAuthenticated else { return }
-        
-        do {
-            let encodedHabit = try Firestore.Encoder().encode(habit)
-            guard let id = habit.id else {
-                throw NSError(domain: "DataManager", code: 400, userInfo: [NSLocalizedDescriptionKey: "Habit ID is missing"])
-            }
-            try await habitsCollection.document(id).setData(encodedHabit, merge: true)
-            await fetchHabits()
-        } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .habit, action: .update))
-            throw error
-        }
-    }
-    
-    func fetchHabits() async {
-        guard isAuthenticated else { return }
-        
-        do {
-            let snapshot = try await habitsCollection
-                .whereField("isActive", isEqualTo: true)
-                .getDocuments()
-            
-            self.habits = snapshot.documents.compactMap { doc in
-                try? doc.data(as: Habit.self)
-            }
-        } catch {
-            self.loadingState = .error(DataManagerError.operationFailed(entity: .habit, action: .fetch))
         }
     }
 }
@@ -652,37 +537,54 @@ extension DataManager {
 // MARK: - Reminder Management
 extension DataManager {
     func createReminder(_ reminder: Reminder) async throws {
-        guard isAuthenticated else { return }
+        guard let repo = reminderRepository else { throw DataManagerError.notAuthenticated }
         
         do {
-            let encodedReminder = try Firestore.Encoder().encode(reminder)
-            guard let id = reminder.id else {
-                throw NSError(domain: "DataManager", code: 400, userInfo: [NSLocalizedDescriptionKey: "Reminder ID is missing"])
-            }
-            try await remindersCollection.document(id).setData(encodedReminder)
-            await fetchReminders()
+            try await repo.create(reminder)
+            try await fetchReminders()
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .reminder, action: .create))
+            alertError = .failed(.reminder, .create)
+            throw error
+        }
+    }
+    
+    func updateReminder(_ reminder: Reminder) async throws {
+        guard let repo = reminderRepository else { throw DataManagerError.notAuthenticated }
+        
+        do {
+            try await repo.update(reminder)
+            try await fetchReminders()
+        } catch {
+            alertError = .failed(.reminder, .update)
+            throw error
+        }
+    }
+    
+    func fetchReminders() async throws {
+        guard let repo = reminderRepository else { throw DataManagerError.notAuthenticated }
+        
+        do {
+            reminders = try await repo.fetchAll { query in
+                query.order(by: "createdAt", descending: true)
+            }
+        } catch {
+            alertError = .failed(.reminder, .fetch)
             throw error
         }
     }
     
     func completeReminder(_ reminder: Reminder) async throws {
-        guard isAuthenticated else { return }
+        guard let repo = reminderRepository else { throw DataManagerError.notAuthenticated }
         
         do {
             var completedReminder = reminder
             completedReminder.isCompleted = true
             completedReminder.updatedAt = Date()
             
-            let encodedReminder = try Firestore.Encoder().encode(completedReminder)
-            guard let id = reminder.id else {
-                throw NSError(domain: "DataManager", code: 400, userInfo: [NSLocalizedDescriptionKey: "Reminder ID is missing"])
-            }
-            try await remindersCollection.document(id).setData(encodedReminder, merge: true)
-            await fetchReminders()
+            try await updateReminder(completedReminder)
+            try await fetchReminders()
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .reminder, action: .complete))
+            alertError = .failed(.reminder, .complete)
             throw error
         }
     }
@@ -699,41 +601,8 @@ extension DataManager {
             
             try await updateReminder(snoozedReminder)
         } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .reminder, action: .snooze))
+            alertError = .failed(.reminder, .snooze)
             throw error
-        }
-    }
-    
-    func updateReminder(_ reminder: Reminder) async throws {
-        guard isAuthenticated else { return }
-        
-        do {
-            let encodedReminder = try Firestore.Encoder().encode(reminder)
-            guard let id = reminder.id else {
-                throw NSError(domain: "DataManager", code: 400, userInfo: [NSLocalizedDescriptionKey: "Reminder ID is missing"])
-            }
-            try await remindersCollection.document(id).setData(encodedReminder, merge: true)
-            await fetchReminders()
-        } catch {
-            alertError = AlertError.dataManagerError(DataManagerError.operationFailed(entity: .reminder, action: .update))
-            throw error
-        }
-    }
-    
-    func fetchReminders() async {
-        guard isAuthenticated else { return }
-        
-        do {
-            let snapshot = try await remindersCollection
-                .whereField("isCompleted", isEqualTo: false)
-                .order(by: "triggerDate")
-                .getDocuments()
-            
-            self.reminders = snapshot.documents.compactMap { doc in
-                try? doc.data(as: Reminder.self)
-            }
-        } catch {
-            self.loadingState = .error(DataManagerError.operationFailed(entity: .reminder, action: .fetch))
         }
     }
 }
@@ -742,7 +611,7 @@ extension DataManager {
 extension DataManager {
     func generateInsights(for dateRange: DateInterval) async throws -> UserInsights {
         guard isAuthenticated else {
-             throw DataManagerError.notAuthenticated
+            throw DataManagerError.notAuthenticated
         }
         
         var insights = UserInsights(dateRange: dateRange)
@@ -759,7 +628,7 @@ extension DataManager {
         return insights
     }
     
-    private func updateDailyStats(focusTime: Int = 0, completedTasks: Int = 0, completedHabits: Int = 0) async {
+    private func updateDailyStats(focusTime: Int = 0, completedTasks: Int = 0, completedHabits: Int = 0) async throws {
         guard isAuthenticated else { return }
         
         let today = Calendar.current.startOfDay(for: Date())
@@ -775,7 +644,8 @@ extension DataManager {
                 "completedHabits": FieldValue.increment(Int64(completedHabits))
             ], merge: true)
         } catch {
-            loadingState = .error(DataManagerError.operationFailed(entity: .stats, action: .update))
+            alertError = .failed(.stats, .update)
+            throw error
         }
     }
 }
@@ -840,6 +710,21 @@ extension DataManager {
         guard isAuthenticated else { return }
         startListeningToTasks()
         // Any future listeners
+    }
+}
+
+// MARK: - FirestoreRepositories
+extension DataManager {
+    private func setupRepositories() {
+        taskRepository = FirestoreRepository(
+            collection: db().collection("users").document(userId).collection("tasks")
+        )
+        habitRepository = FirestoreRepository(
+            collection: db().collection("users").document(userId).collection("habits")
+        )
+        reminderRepository = FirestoreRepository(
+            collection: db().collection("users").document(userId).collection("reminders")
+        )
     }
 }
 
