@@ -304,7 +304,8 @@ extension DataManager {
             try await repo.create(task)
             try await fetchTasks()
         } catch {
-            throw DataManagerError.operationFailed(entity: .task, action: .create)
+            alertError = .failed(.task, .create)
+            throw error
         }
     }
     
@@ -314,7 +315,8 @@ extension DataManager {
             try await repo.update(task)
             try await fetchTasks()
         } catch {
-            throw DataManagerError.operationFailed(entity: .task, action: .update)
+            alertError = .failed(.task, .update)
+            throw error
         }
     }
     
@@ -324,7 +326,8 @@ extension DataManager {
             try await repo.delete(task)
             try await fetchTasks()
         } catch {
-            throw DataManagerError.operationFailed(entity: .task, action: .delete)
+            alertError = .failed(.task, .delete)
+            throw error
         }
   
     }
@@ -336,7 +339,8 @@ extension DataManager {
                 query.order(by: "createdAt", descending: true)
             }
         } catch {
-            throw DataManagerError.operationFailed(entity: .task, action: .fetch)
+            alertError = .failed(.task, .fetch)
+            throw error
         }
     }
     
@@ -574,7 +578,7 @@ extension DataManager {
     }
     
     func completeReminder(_ reminder: Reminder) async throws {
-        guard let repo = reminderRepository else { throw DataManagerError.notAuthenticated }
+        guard reminderRepository != nil else { throw DataManagerError.notAuthenticated }
         
         do {
             var completedReminder = reminder

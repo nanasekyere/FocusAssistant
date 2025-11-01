@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ButtonKit
 
 struct HomeView: View {
     @Environment(DataManager.self) private var manager
@@ -31,7 +32,18 @@ struct HomeView: View {
                     
                     Button("Break Reminder Settings") {}
                     
-                    Button("Focus History") {}
+                    AsyncButton("Test Alert") {
+                        // Create a test task that will trigger an error
+                        let testTask = UserTask(
+                            title: "Test Error Task",
+                            description: "This task is designed to trigger an error"
+                        )
+                        
+                        // This will likely trigger a DataManagerError.notAuthenticated
+                        // or operationFailed depending on the current state
+                        // AsyncButton handles the async/throws automatically
+                        try await manager.createTask(testTask)
+                    }
                     
                     Button("Pomodoro Timer") {}
     

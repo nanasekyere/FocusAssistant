@@ -31,7 +31,8 @@ struct TasksView: View {
                     }
                     .listStyle(.insetGrouped)
                     .refreshable {
-                        await manager.fetchTasks()
+                        do { try await manager.fetchTasks() }
+                        catch { manager.alertError = .failed(.task, .fetch) }
                     }
                 }
             }

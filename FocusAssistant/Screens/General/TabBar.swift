@@ -7,12 +7,50 @@
 
 import SwiftUI
 
-enum TabSelection {
+enum TabSelection: String, CaseIterable, Identifiable {
     case home
     case tasks
     case sessions
     case habits
     case insights
+    
+    var id: String { rawValue }
+    
+    var title: String {
+        switch self {
+        case .home: return "Home"
+        case .tasks: return "Tasks"
+        case .sessions: return "Sessions"
+        case .habits: return "Habits"
+        case .insights: return "Insights"
+        }
+    }
+    
+    var systemImage: String {
+        switch self {
+        case .home: return "house.fill"
+        case .tasks: return "list.bullet.clipboard"
+        case .sessions: return "brain"
+        case .habits: return "repeat.circle.fill"
+        case .insights: return "chart.bar.fill"
+        }
+    }
+    
+    @ViewBuilder
+    func view() -> some View {
+        switch self {
+        case .home:
+            HomeView()
+        case .tasks:
+            TasksView()
+        case .sessions:
+            ProfileView()
+        case .habits:
+            ProfileView()
+        case .insights:
+            ProfileView()
+        }
+    }
 }
 
 struct TabContentView<Content: View>: View {
@@ -54,33 +92,12 @@ struct TabBar: View {
     var body: some View {
         if let user = manager.currentUser {
             TabView(selection: $selectedTab) {
-                Tab("Home", systemImage: "house.fill", value: .home) {
-                    TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
-                        HomeView()
-                    }
-                }
-                
-                Tab("Tasks", systemImage: "list.bullet.clipboard", value: .tasks) {
-                    TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
-                        TasksView()
-                    }
-                }
-                
-                Tab("Sessions", systemImage: "brain", value: .sessions) {
-                    TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
-                        ProfileView()
-                    }
-                }
-                
-                Tab("Habits", systemImage: "repeat.circle.fill", value: .habits) {
-                    TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
-                        ProfileView()
-                    }
-                }
-                
-                Tab("Insights", systemImage: "chart.bar.fill", value: .insights) {
-                    TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
-                        ProfileView()
+                ForEach(TabSelection.allCases) { tab in
+                    Tab(tab.title, systemImage: tab.systemImage, value: tab) {
+                        TabContentView(firstName: user.firstName, showAddTask: $showAddTask) {
+                            tab.view()
+                                .dataManagerErrorHandling()
+                        }
                     }
                 }
             }
@@ -89,21 +106,6 @@ struct TabBar: View {
             } content: {
                 AddTaskView()
                     .environment(manager)
-            }
-            .alert(
-                "Error",
-                isPresented: Binding(
-                    get: { manager.showingAlert },
-                    set: { _ in manager.clearAlertError() }
-                )
-            ) {
-                Button("OK") {
-                    manager.clearAlertError()
-                }
-            } message: {
-                if let alertError = manager.alertError {
-                    Text(alertError.message)
-                }
             }
         }
     }
