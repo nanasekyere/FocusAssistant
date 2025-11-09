@@ -21,12 +21,13 @@ struct HomeView: View {
                         DailyTaskCompletionView(completedCount: manager.completedTodaysTasks.count, totalCount: manager.todaysTasks.count)
                     }
                     .padding(30)
-                    .background(Color.gray.opacity(0.3))
+                    .background(Color.cyan.opacity(0.3))
                     .containerShape(.rect(cornerRadius: 30))
                     
                 }
                 .navigationTitle("Welcome Back, \(user.firstName)")
             }
+            .scrollClipDisabled(true)
             .scrollContentBackground(.hidden)
         }
     }

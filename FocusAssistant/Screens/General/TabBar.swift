@@ -68,12 +68,8 @@ struct TabContentView<Content: View>: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(
-                    colors: [Color.blue.opacity(0.1), Color.cyan.opacity(0.2)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea(.all)
+                BackgroundView()
+                    .ignoresSafeArea(.all)
                 
                 switch manager.loadingState {
                 case .loading:
@@ -86,6 +82,8 @@ struct TabContentView<Content: View>: View {
                         .applyToolbar(firstName: firstName, showAddTask: $showAddTask)
                 }
             }
+            .toolbarBackground(Color.cyan.opacity(0.3),
+                               for: .tabBar)
         }
         .task {
             await manager.loadAllData()
@@ -109,7 +107,9 @@ struct TabBar: View {
                         }
                     }
                 }
+                
             }
+           
             .sheet(isPresented: $showAddTask) {
                 manager.checkCurrentUser()
             } content: {
