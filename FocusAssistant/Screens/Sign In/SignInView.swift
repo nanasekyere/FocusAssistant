@@ -22,7 +22,7 @@ struct SignInView: View {
     
     var body: some View {
         @Bindable var manager = manager
-        NavigationStack {
+        ZStack {
             VStack(spacing: 15){
                 Text("Focus Assistant")
                     .font(.largeTitle)
@@ -126,8 +126,8 @@ struct SignInView: View {
                 .animation(.easeInOut, value: signingUp)
            
             }
+            .padding(.horizontal, 20)
         }
-        .padding(.horizontal, 20)
         .alert(
             "Error",
             isPresented: Binding(

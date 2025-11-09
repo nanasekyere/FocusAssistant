@@ -60,6 +60,7 @@ class DataManager {
     }
     init(isTest: Bool) {
         self.isTest = isTest
+        self.setPreview()
     }
     
     func start() {
@@ -100,6 +101,22 @@ class DataManager {
             group.addTask { try await self.fetchHabits() }
             group.addTask { try await self.fetchReminders() }
         }
+    }
+    
+    private func setPreview() {
+        guard self.isTest else { return }
+        
+        self.currentUser = User(
+            id: "preview-user-123",
+            fullName: "John Preview",
+            email: "john.preview@example.com"
+        )
+        // Populate with dummy data
+        self.tasks = PreviewData.sampleTasks
+        self.focusSessions = PreviewData.sampleFocusSessions
+        self.habits = PreviewData.sampleHabits
+        self.reminders = PreviewData.sampleReminders
+        self.currentInsights = PreviewData.sampleInsights
     }
 }
 
@@ -274,6 +291,10 @@ extension DataManager {
             }
             return false
         }
+    }
+    
+    var completedTodaysTasks: [UserTask] {
+        todaysTasks.filter { $0.isCompleted }
     }
     
     var overdueTasks: [UserTask] {

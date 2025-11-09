@@ -17,7 +17,7 @@ struct ProfileView: View {
         @Bindable var manager = manager
         
         if let user = manager.currentUser {
-            NavigationStack {
+            ZStack {
                 VStack(alignment: .center, spacing: 20) {
                     // Header Section
                     
@@ -107,7 +107,6 @@ struct ProfileView: View {
                 .padding(.top, 20)
                 .padding(.horizontal, 20)
                 .frame(maxWidth: .infinity)
-                .background(Color(.systemBackground))
                 .alert(
                     "Error",
                     isPresented: Binding(

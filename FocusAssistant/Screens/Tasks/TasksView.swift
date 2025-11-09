@@ -11,7 +11,7 @@ struct TasksView: View {
     @Environment(DataManager.self) var manager
     
     var body: some View {
-        NavigationStack {
+        VStack {
             Group {
                 if manager.tasks.isEmpty {
                     ContentUnavailableView("No Tasks", systemImage: "checklist", description: Text("Add a task to get started."))
@@ -29,6 +29,7 @@ struct TasksView: View {
                             .onTapGesture { completeTask(task) }
                         }
                     }
+                    .scrollContentBackground(.hidden)
                     .listStyle(.insetGrouped)
                     .refreshable {
                         do { try await manager.fetchTasks() }

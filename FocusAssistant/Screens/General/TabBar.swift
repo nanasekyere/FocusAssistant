@@ -67,15 +67,24 @@ struct TabContentView<Content: View>: View {
     
     var body: some View {
         NavigationStack {
-            switch manager.loadingState {
-            case .loading:
-                ProgressView()
-            case .error(let error):
-                ContentUnavailableView("Unable to load data", systemImage: "exclamationmark.triangle", description: Text(error.localizedDescription))
-            case .idle:
-                content
-                    .environment(manager)
-                    .applyToolbar(firstName: firstName, showAddTask: $showAddTask)
+            ZStack {
+                LinearGradient(
+                    colors: [Color.blue.opacity(0.1), Color.cyan.opacity(0.2)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea(.all)
+                
+                switch manager.loadingState {
+                case .loading:
+                    ProgressView()
+                case .error(let error):
+                    ContentUnavailableView("Unable to load data", systemImage: "exclamationmark.triangle", description: Text(error.localizedDescription))
+                case .idle:
+                    content
+                        .environment(manager)
+                        .applyToolbar(firstName: firstName, showAddTask: $showAddTask)
+                }
             }
         }
         .task {
@@ -111,7 +120,7 @@ struct TabBar: View {
     }
 }
 
-#Preview {
+#Preview(traits: .previewData) {
     TabBar()
-        .environment(DataManager(currentUser: User.example))
 }
+
