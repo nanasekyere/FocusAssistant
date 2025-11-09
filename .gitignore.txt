@@ -104,3 +104,4 @@ playground.xcworkspace
 DatabaseStructure.md
 ErrorHandlingStrategy.md
 ErrorHandlingExampleView.swift
+COLOR_GUIDE.md
