@@ -22,10 +22,9 @@ struct BackgroundView: View {
     
     private var lightModeBackground: some View {
         ZStack {
-            // Light base gradient - mirroring dark mode structure
             LinearGradient(
                 colors: [
-                    Color.white,
+                    Color.gray.opacity(0.05),
                     Color.gray.opacity(0.1),
                     Color.cyan.opacity(0.15)
                 ],
@@ -33,7 +32,6 @@ struct BackgroundView: View {
                 endPoint: .bottomTrailing
             )
             
-            // Purple accent at top (like dark mode)
             RadialGradient(
                 colors: [
                     Color.faPurple.opacity(0.25),
@@ -44,8 +42,7 @@ struct BackgroundView: View {
                 endRadius: 400
             )
             .blendMode(.multiply)
-            
-            // Cyan glow accent at bottom (like dark mode)
+
             RadialGradient(
                 colors: [
                     Color.cyan.opacity(0.2),
@@ -57,9 +54,8 @@ struct BackgroundView: View {
             )
             .blendMode(.multiply)
             
-            // Subtle highlight texture for depth (opposite of dark mode)
             EllipticalGradient(
-                colors: [Color.white.opacity(0.4), Color.clear],
+                colors: [Color.gray.opacity(0.2), Color.clear],
                 center: .center,
                 startRadiusFraction: 0.3,
                 endRadiusFraction: 1.0
@@ -70,7 +66,6 @@ struct BackgroundView: View {
     
     private var darkModeBackground: some View {
         ZStack {
-            // Dark base gradient - swapped to start with purple at top
             LinearGradient(
                 colors: [
                     Color.black,
@@ -81,7 +76,7 @@ struct BackgroundView: View {
                 endPoint: .bottomTrailing
             )
             
-            // Purple accent at top
+
             RadialGradient(
                 colors: [
                     Color.faPurple.opacity(0.5),
@@ -93,7 +88,6 @@ struct BackgroundView: View {
             )
             .blendMode(.screen)
             
-            // Cyan glow accent at bottom (away from tab bar area)
             RadialGradient(
                 colors: [
                     Color.cyan.opacity(0.4),
@@ -105,7 +99,6 @@ struct BackgroundView: View {
             )
             .blendMode(.softLight)
             
-            // Subtle noise texture for depth
             EllipticalGradient(
                 colors: [Color.white.opacity(0.05), Color.clear],
                 center: .center,

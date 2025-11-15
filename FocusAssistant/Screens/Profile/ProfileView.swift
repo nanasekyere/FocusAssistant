@@ -41,8 +41,7 @@ struct ProfileView: View {
                     }
                     .padding(.vertical, 20)
                     .frame(maxWidth: .infinity)
-                    .background(Color(.systemGray6))
-                    .clipShape(.rect(cornerRadius: 40))
+                    .glassEffect(.regular.tint(.glassSurface), in: .rect(cornerRadius: 40))
                     
                     Form {
                         HStack {
@@ -51,7 +50,7 @@ struct ProfileView: View {
                             }
                             .font(.headline)
                             .fontWeight(.medium)
-                        }.listRowBackground(Color(.systemGray6))
+                        }.listRowBackground(Color(.surfacePrimary))
                         
                         HStack {
                             Image(systemName: "questionmark.circle")
@@ -59,7 +58,8 @@ struct ProfileView: View {
                             Text("Help")
                                 .font(.headline)
                                 .fontWeight(.medium)
-                        }.listRowBackground(Color(.systemGray6))
+                        }
+                        .glassEffect(.regular.tint(.glassSurface).interactive())
                         
                         HStack {
                             Image(systemName: "info.circle")
@@ -67,7 +67,7 @@ struct ProfileView: View {
                             Text("About")
                                 .font(.headline)
                                 .fontWeight(.medium)
-                        }.listRowBackground(Color(.systemGray6))
+                        }.listRowBackground(Color(.surfacePrimary))
                     }
                     .listRowSpacing(12)
                     .scrollContentBackground(.hidden)
@@ -89,8 +89,7 @@ struct ProfileView: View {
                             .foregroundStyle(.red)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color(.systemGray6))
-                            .clipShape(.capsule)
+                            .glassEffect(.regular.tint(.glassSurface).interactive())
                         }
                         .padding(.horizontal)
                         
@@ -136,7 +135,6 @@ struct ProfileView: View {
     }
 }
 
-#Preview {
+#Preview(traits: .previewBackground) {
     ProfileView()
-        .environment(DataManager(currentUser: User.example))
 }
