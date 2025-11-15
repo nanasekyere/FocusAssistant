@@ -25,8 +25,8 @@ struct HomeView: View {
                     .padding(30)
                     .glassEffect(.regular.tint(.glassSurface), in: .rect(cornerRadius: 30))
                     
-                    Group {
-                        VStack {
+                    VStack {
+                        Group {
                             HStack {
                                 Text("Tasks")
                                     .font(.title3)
@@ -37,20 +37,23 @@ struct HomeView: View {
                                 Button("See All →") {}
                             }
                             
-                            ScrollView(.horizontal) {
-                                LazyHStack(spacing: 16) {
-                                    if manager.todaysTasks.isEmpty {
-                                        EmptyTasksView()
-                                    } else {
+                            if manager.todaysTasks.isEmpty {
+                                EmptyTasksView()
+                            } else {
+                                ScrollView(.horizontal) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(manager.todaysTasks.prefix(5)) { task in
                                             TaskBox(task: task)
+                                                .glassEffect(.regular.interactive().tint(.glassSurface), in: .rect(cornerRadius: 24))
                                         }
                                     }
+                                    .padding(.horizontal)
                                 }
-                                .padding(.horizontal)
+                                .scrollIndicators(.hidden)
+                                .scrollClipDisabled(true)
                             }
-                            .scrollIndicators(.hidden)
-                            
+                        }
+                        Group {
                             HStack {
                                 Text("Trends")
                                     .font(.title3)
@@ -64,7 +67,8 @@ struct HomeView: View {
                             ScrollView(.horizontal) {
                                 
                             }
-                            
+                        }
+                        Group {
                             HStack {
                                 Text("Streaks")
                                     .font(.title3)
@@ -80,6 +84,7 @@ struct HomeView: View {
                             }
                         }
                     }
+                    
                     .padding()
                     
                 }
@@ -91,36 +96,6 @@ struct HomeView: View {
     }
 }
 
-
-struct TaskBox: View {
-    let task: UserTask
-    @Environment(DataManager.self) private var manager
-    
-    var body: some View {
-    }
-}
-
 #Preview(traits: .previewData) {
     TabBar()
-}
-
-struct EmptyTasksView: View {
-    var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "checkmark.circle")
-                .font(.system(size: 40))
-                .foregroundStyle(.green)
-            
-            Text("All caught up!")
-                .font(.headline)
-                .fontWeight(.medium)
-            
-            Text("No tasks scheduled for today")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .padding(32)
-        .frame(width: 280)
-        .glassEffect(.regular.tint(.glassSurface), in: .rect(cornerRadius: 16))
-    }
 }
